@@ -1,22 +1,64 @@
 import streamlit as st
 import datetime
+import pandas as pd
+import numpy as np
 
-title = "3rd Post"
+title = "Uber Pickups in NYC"
 key = 3
-post_date = datetime.date(2021, 4, 6)
+post_date = datetime.date(2021, 4, 7)
+
+DATE_COLUMN = "date/time"
+DATA_URL = (
+    "https://s3-us-west-2.amazonaws.com/"
+    "streamlit-demo-data/uber-raw-data-sep14.csv.gz"
+)
+
+
+@st.cache
+def load_data(nrows):
+    data = pd.read_csv(DATA_URL, nrows=nrows)
+    lowercase = lambda x: str(x).lower()
+    data.rename(lowercase, axis="columns", inplace=True)
+    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
+    return data
 
 
 def render():
     st.markdown(f"## [{title}](/?post={key})")
     st.write(post_date)
-    st.write(
-        "Lorem ipsum dolor sit amet, consectetur adipiscing"
-        " elit, sed do eiusmod tempor incididunt ut labore et"
-        " dolore magna aliqua. Ut enim ad minim veniam, quis "
-        "nostrud exercitation ullamco laboris nisi ut aliquip "
-        "ex ea commodo consequat. Duis aute irure dolor in "
-        "reprehenderit in voluptate velit esse cillum dolore "
-        "eu fugiat nulla pariatur. Excepteur sint occaecat "
-        "cupidatat non proident, sunt in culpa qui officia "
-        "deserunt mollit anim id est laborum."
+
+    # Create a text element and let the reader know the data is loading.
+    data_load_state = st.text("Loading data...")
+    # Load 10,000 rows of data into the dataframe.
+    data = load_data(10000)
+    # Notify the reader that the data was successfully loaded.
+    data_load_state.text("Loading data...done!")
+
+    if st.checkbox("Show raw data"):
+        st.subheader("Raw data")
+        st.write(data)
+
+    st.subheader("Number of pickups by hour")
+    hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0, 24))[0]
+    st.bar_chart(hist_values)
+
+    hour_to_filter = st.slider("hour", 0, 23, 17)  # min: 0h, max: 23h, default: 17h
+    filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
+    # st.subheader(f"Map of all pickups at {hour_to_filter}:00")
+    # st.map(filtered_data)
+
+    dataframe = pd.DataFrame(
+        np.random.randn(10, 20), columns=("col %d" % i for i in range(20))
     )
+
+    st.subheader("Highlighted Table")
+    st.dataframe(dataframe.style.highlight_max(axis=0))
+
+    st.subheader("Static Table")
+    dataframe = pd.DataFrame(
+        np.random.randn(10, 20), columns=("col %d" % i for i in range(20))
+    )
+    st.table(dataframe)
+
+    del data
+    del dataframe

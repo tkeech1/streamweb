@@ -1,11 +1,17 @@
 import streamlit as st
 import about, contact, home, post
 import utils
+import sys
 
 website_title = "Web Site Name"
 author_name = "YOUR NAME"
+recent_post_list_length = 3
 
 st.set_page_config(layout="wide")
+
+environment = None
+if len(sys.argv) > 1:
+    environment = sys.argv[1]
 
 post_id = None
 query_params = st.experimental_get_query_params()
@@ -20,18 +26,19 @@ st.title(website_title)
 st.sidebar.subheader("")
 st.sidebar.subheader("Recent Posts")
 
-post_modules = utils.load_post_modules()
+post_modules_loader = utils.PostModuleLoader(
+    package_name="posts", environment=environment
+)
+post_modules = utils.load_post_modules(post_modules_loader)
 
 # this is a workaround since it doesn't appear possible to
 # get the key of the button that was clicked
 # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
 recent_posts_button_click = []
-recent_posts = []
-for i in range(min(len(post_modules), 3)):
+for recent_post in post_modules[0:3]:
     recent_posts_button_click.append(
-        st.sidebar.button(post_modules[i].title, key=post_modules[i].key)
+        st.sidebar.button(recent_post.title, key=recent_post.key)
     )
-    recent_posts.append(post_modules[i])
 
 if about_button:
     st.experimental_set_query_params()
@@ -44,21 +51,19 @@ elif home_button:
     home.render(post_modules=post_modules)
 elif any(recent_posts_button_click):
     st.experimental_set_query_params()
-    post.render(
-        post_modules=recent_posts,
+    post.render_recent_post(
+        post_modules_loader=post_modules_loader,
         recent_posts_button_click=recent_posts_button_click,
-        post_id=None,
     )
 elif post_id:
-    post.render(
-        post_modules=post_modules,
-        recent_posts_button_click=None,
+    post.render_post(
+        post_modules_loader=post_modules_loader,
         post_id=post_id,
     )
 else:
     home.render(post_modules=post_modules)
 
-# hack to hide hamburger menu, header and footer
+# workaround to hide hamburger menu, header and footer
 # https://github.com/streamlit/streamlit/issues/395
 hide_menu_style = """
         <style>
@@ -69,4 +74,4 @@ hide_menu_style = """
 # hide footer
 # footer {visibility: hidden;}
 st.markdown(hide_menu_style, unsafe_allow_html=True)
-# end hack to hide hamburger menu
+# end workaround to hide hamburger menu

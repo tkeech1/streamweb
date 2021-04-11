@@ -1,9 +1,9 @@
 import streamlit as st
 import datetime
 
-title = "2nd Post"
+title = "Text Post"
 key = 2
-post_date = datetime.date(2021, 4, 7)
+post_date = datetime.date(2021, 4, 6)
 
 
 def render():
