@@ -9,8 +9,9 @@ def render_recent_post(
     if any(recent_posts_button_click):
         for i, clicked in enumerate(recent_posts_button_click):
             if clicked:
-                utils.load_post_modules(post_modules_loader)[i].render()
-                return
+                post_module = utils.load_post_modules(post_modules_loader)[i]
+                post_module.render()
+                return post_module.key
 
     st.write("Post not found")
 
@@ -24,5 +25,5 @@ def render_post(post_modules_loader=None, post_id=None):
                     return
 
         st.write("Post not found")
-    except:
-        st.write("Post not found")
+    except Exception as e:
+        st.write("An error occurred while loading content.")

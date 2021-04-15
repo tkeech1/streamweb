@@ -35,26 +35,26 @@ post_modules = utils.load_post_modules(post_modules_loader)
 # get the key of the button that was clicked
 # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
 recent_posts_button_click = []
-for recent_post in post_modules[0:3]:
+for recent_post in post_modules[0:recent_post_list_length]:
     recent_posts_button_click.append(
         st.sidebar.button(recent_post.title, key=recent_post.key)
     )
 
 if about_button:
     st.experimental_set_query_params()
-    about.render(name=author_name)
+    about.render()
 elif contact_button:
     st.experimental_set_query_params()
-    contact.render(name=author_name)
+    contact.render()
 elif home_button:
     st.experimental_set_query_params()
     home.render(post_modules=post_modules)
 elif any(recent_posts_button_click):
-    st.experimental_set_query_params()
-    post.render_recent_post(
+    post_id = post.render_recent_post(
         post_modules_loader=post_modules_loader,
         recent_posts_button_click=recent_posts_button_click,
     )
+    st.experimental_set_query_params(post=post_id)
 elif post_id:
     post.render_post(
         post_modules_loader=post_modules_loader,
