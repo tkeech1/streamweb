@@ -170,17 +170,17 @@ keyPrefix = ""
 
 
 # Light Theme
-#[theme]
-#primaryColor="#F63366"
-#backgroundColor="#FFFFFF"
-#secondaryBackgroundColor="#F0F2F6"
-#textColor="#262730"
-#font="sans serif"
-
-# Dark Theme
 [theme]
 primaryColor="#F63366"
-backgroundColor="#07080B"
-secondaryBackgroundColor="#18191F"
-textColor="#EEEEEE"
+backgroundColor="#FFFFFF"
+secondaryBackgroundColor="#F0F2F6"
+textColor="#262730"
 font="sans serif"
+
+# Dark Theme
+#[theme]
+#primaryColor="#F63366"
+#backgroundColor="#07080B"
+#secondaryBackgroundColor="#18191F"
+#textColor="#EEEEEE"
+#font="sans serif"

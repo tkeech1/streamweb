@@ -3,14 +3,15 @@ import datetime
 import pandas as pd
 import numpy as np
 
-title = "Interactive Post"
+long_title = "Interactive Post"
+short_title = "interactive post"
 key = 4
-post_date = datetime.date(2021, 4, 8)
+content_date = datetime.date(2021, 4, 8)
 
 
 def render():
-    st.markdown(f"## [{title}](/?post={key})")
-    st.write(post_date)
+    st.markdown(f"## [{long_title}](/?content={key})")
+    st.write(content_date)
     st.write("A Data Table:")
 
     df = pd.DataFrame({"first column": [1, 2, 3, 4], "second column": [10, 20, 30, 40]})

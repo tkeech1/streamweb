@@ -3,9 +3,10 @@ import datetime
 import pandas as pd
 import numpy as np
 
-title = "Uber Pickups in NYC"
+short_title = "uber"
+long_title = "uber pickups in nyc"
 key = 3
-post_date = datetime.date(2021, 4, 7)
+content_date = datetime.date(2021, 4, 7)
 
 DATE_COLUMN = "date/time"
 DATA_URL = (
@@ -24,8 +25,8 @@ def load_data(nrows):
 
 
 def render():
-    st.markdown(f"## [{title}](/?post={key})")
-    st.write(post_date)
+    st.markdown(f"## [{long_title}](/?content={key})")
+    st.write(content_date)
 
     # Create a text element and let the reader know the data is loading.
     data_load_state = st.text("Loading data...")

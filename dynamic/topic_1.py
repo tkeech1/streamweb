@@ -1,14 +1,15 @@
 import streamlit as st
 import datetime
 
-title = "1st Post"
+short_title = "1st post"
+long_title = "1st Post"
 key = 1
-post_date = datetime.date(2021, 4, 1)
+content_date = datetime.date(2021, 4, 1)
 
 
 def render():
-    st.markdown(f"## [{title}](/?post={key})")
-    st.write(post_date)
+    st.markdown(f"## [{long_title}](/?content={key})")
+    st.write(content_date)
 
     st.write(
         "Lorem ipsum dolor sit amet, consectetur adipiscing"
