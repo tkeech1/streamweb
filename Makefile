@@ -1,5 +1,11 @@
 run-streamlit-prd:
-	streamlit run layouts/clean_sidebar.py -- prd
+	cd streamweb/ && streamlit run layout_clean_sidebar.py -- prd
 
 run-streamlit:
-	streamlit run layouts/clean_no_sidebar.py
+	cd streamweb/ && streamlit run layout_clean_sidebar.py
+
+run-streamlit-nosb:
+	cd streamweb/ && streamlit run layout_clean_no_sidebar.py
+
+test:
+	python -m pytest
