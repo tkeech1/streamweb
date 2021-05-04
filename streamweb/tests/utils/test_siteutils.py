@@ -1,7 +1,7 @@
 """Tests for `stsiteutils` package."""
 
 import importlib
-from streamweb.utils.siteutils import (
+from utils.siteutils import (
     load_content,
     render_content_by_click,
     render_content_by_key,

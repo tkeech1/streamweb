@@ -2,13 +2,15 @@ import streamlit as st
 import sys
 from typing import List
 from types import ModuleType
+import site_config
 
-# import utils.utils as utils
 from utils.siteutils import (
     load_content,
     render_content_by_click,
     render_content_by_key,
 )
+
+recent_dynamic_content_list_length = 3
 
 
 def render_home_content(content: List[ModuleType]) -> None:
@@ -40,10 +42,6 @@ def create_buttons(
     return button_click_flags
 
 
-website_title = "Web Site Name"
-author_name = "YOUR NAME"
-recent_dynamic_content_list_length = 3
-
 st.set_page_config(layout="wide")
 
 environment = None
@@ -56,10 +54,10 @@ if "content" in query_params:
     content_id = query_params["content"][0]
 
 
-static_content = load_content("static", environment)
-dynamic_content = load_content("dynamic", environment)
+static_content = load_content("static", environment, feed=False)
+dynamic_content = load_content("dynamic", environment, feed=True)
 
-st.title(website_title)
+st.title(site_config.website_title)
 
 home_button = st.sidebar.button("home")
 
@@ -70,6 +68,9 @@ st.sidebar.subheader("Recent Posts")
 dynamic_content_button_click = create_buttons(
     dynamic_content, recent_dynamic_content_list_length
 )
+
+st.sidebar.subheader("")
+st.sidebar.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
 
 # navigation logic -determines what to display in the main content area
 if home_button:

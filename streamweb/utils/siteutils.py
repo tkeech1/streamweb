@@ -4,10 +4,11 @@ import streamlit as st
 
 import importlib
 import os
-from os.path import dirname, basename, isfile, join
+from os.path import basename, isfile, join
 import glob
 from typing import List, Tuple
 from types import ModuleType
+from utils.feed import create_feed
 
 # https://docs.streamlit.io/en/stable/caching.html#the-hash-funcs-parameter
 
@@ -44,25 +45,35 @@ def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, int]:
 # changed. Change to load only those modules that have changed
 # since last load
 @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
-def load_modules(module_loader: ModuleLoader) -> List[ModuleType]:
+def load_modules(module_loader: ModuleLoader, feed: bool = False) -> List[ModuleType]:
     importlib.invalidate_caches()
 
     all_modules = []
     if os.path.isdir(module_loader.package_name):
         modules = glob.glob(join(module_loader.package_name, "*.py"))
         all_modules = [
-            basename(f)[:-3] for f in modules if isfile(f) and not f.endswith("__init__.py")
+            basename(f)[:-3]
+            for f in modules
+            if isfile(f) and not f.endswith("__init__.py")
         ]
 
     loaded_modules = []
     for module_name in all_modules:
         module = importlib.import_module(
-            name=f".{module_name}", package=module_loader.package_name.replace(os.path.sep, ".")
+            name=f".{module_name}",
+            package=module_loader.package_name.replace(os.path.sep, "."),
         )
         # if the module has already been loaded, reload() so the import system sees the changes to the module
         # changes to modules were not visible without the call to reload()
         module = importlib.reload(module)
         loaded_modules.append(module)
+
+    # when content modules are reloaded, refresh the rss/atom feeds
+    if feed:
+        create_feed(
+            sorted(loaded_modules, key=lambda x: x.content_date, reverse=False),
+            module_loader.package_name,
+        )
 
     return sorted(loaded_modules, key=lambda x: x.content_date, reverse=True)
 
@@ -105,6 +116,8 @@ def render_content_by_key(
             st.write(f"{e}")
 
 
-def load_content(package_name: str, environment: str) -> List[ModuleType]:
+def load_content(
+    package_name: str, environment: str, feed: bool = False
+) -> List[ModuleType]:
     content_loader = ModuleLoader(package_name=package_name, environment=environment)
-    return load_modules(content_loader)
+    return load_modules(content_loader, feed)

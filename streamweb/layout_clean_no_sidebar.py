@@ -2,8 +2,8 @@ import streamlit as st
 import sys
 from typing import List
 from types import ModuleType
+import site_config
 
-# import utils.utils as utils
 from utils.siteutils import (
     load_content,
     render_content_by_click,
@@ -28,8 +28,6 @@ def render_home_content(content: List[ModuleType]) -> None:
                 module.render()
 
 
-website_title = "Web Site Name"
-author_name = "YOUR NAME"
 recent_dynamic_content_list_length = 3
 
 st.set_page_config(layout="centered")
@@ -43,7 +41,7 @@ query_params = st.experimental_get_query_params()
 if "content" in query_params:
     content_id = query_params["content"][0]
 
-st.title(website_title)
+st.title(site_config.website_title)
 
 static_content = load_content("static", environment)
 
@@ -58,7 +56,7 @@ for content, button_column in zip(static_content, button_columns[1:]):
         button_column.button(content.short_title, key=content.key)
     )
 
-dynamic_content = load_content("dynamic", environment)
+dynamic_content = load_content("dynamic", environment, feed=True)
 
 if home_button:
     st.experimental_set_query_params()
@@ -78,6 +76,8 @@ else:
     st.experimental_set_query_params()
     render_home_content(content=dynamic_content)
 
+st.subheader("")
+st.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
 
 # workaround to hide hamburger menu, header and footer
 # https://github.com/streamlit/streamlit/issues/395

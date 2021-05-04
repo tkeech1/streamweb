@@ -8,4 +8,4 @@ run-streamlit-nosb:
 	cd streamweb/ && streamlit run layout_clean_no_sidebar.py
 
 test:
-	python -m pytest
+	cd streamweb/ && python -m pytest

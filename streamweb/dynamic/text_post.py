@@ -1,15 +1,16 @@
 import streamlit as st
 import datetime
+import pytz
 
 short_title = "1st post"
 long_title = "1st Post"
 key = 1
-content_date = datetime.date(2021, 4, 1)
+content_date = datetime.datetime(2021, 4, 1).astimezone(pytz.timezone("US/Eastern"))
 
 
 def render():
     st.markdown(f"## [{long_title}](/?content={key})")
-    st.write(content_date)
+    st.write(content_date.strftime("%m/%d/%Y"))
 
     st.write(
         "Lorem ipsum dolor sit amet, consectetur adipiscing"

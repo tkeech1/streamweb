@@ -1,18 +1,15 @@
 import streamlit as st
 import datetime
+import pytz
 import pandas as pd
 import numpy as np
 
 short_title = "Rideshare Analysis"
 long_title = "Rideshare Pickups in NYC"
 key = 3
-content_date = datetime.date(2021, 4, 9)
+content_date = datetime.datetime(2021, 4, 9).astimezone(pytz.timezone("US/Eastern"))
 
 DATE_COLUMN = "date/time"
-# DATA_URL = (
-#    "https://s3-us-west-2.amazonaws.com/"
-#    "streamlit-demo-data/uber-raw-data-sep14.csv.gz"
-# )
 
 
 @st.cache
@@ -27,7 +24,7 @@ def load_data(nrows):
 
 def render():
     st.markdown(f"## [{long_title}](/?content={key})")
-    st.write(content_date)
+    st.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
 
     # Create a text element and let the reader know the data is loading.
     data_load_state = st.text("Loading data...")

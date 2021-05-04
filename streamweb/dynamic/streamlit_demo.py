@@ -1,17 +1,18 @@
 import streamlit as st
 import datetime
+import pytz
 import pandas as pd
 import numpy as np
 
 long_title = "Streamlit Example Dashboard"
 short_title = "Streamlit Example Dashboard"
 key = 4
-content_date = datetime.date(2021, 4, 8)
+content_date = datetime.datetime(2021, 4, 8).astimezone(pytz.timezone("US/Eastern"))
 
 
 def render():
     st.markdown(f"## [{long_title}](/?content={key})")
-    st.write(content_date)
+    st.write(content_date.strftime("%m/%d/%Y"))
     st.write("A Data Table:")
 
     df = pd.DataFrame({"first column": [1, 2, 3, 4], "second column": [10, 20, 30, 40]})
