@@ -27,6 +27,9 @@ def render_home_content(content: List[ModuleType]) -> None:
             with expander:
                 module.render()
 
+    st.subheader("")
+    st.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
+
 
 recent_dynamic_content_list_length = 3
 
@@ -45,11 +48,15 @@ st.title(site_config.website_title)
 
 static_content = load_content("static", environment)
 
+static_content_button_click = []
+cols = len(static_content) + 1
+if cols < 6:
+    cols = max(len(static_content), 6)
+
 # this is a workaround since it doesn't appear possible to
 # get the key of the button that was clicked
 # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
-static_content_button_click = []
-[*button_columns] = st.beta_columns(len(static_content) + 6)
+[*button_columns] = st.beta_columns(cols)
 home_button = button_columns[0].button("home")
 for content, button_column in zip(static_content, button_columns[1:]):
     static_content_button_click.append(
@@ -75,9 +82,6 @@ elif content_id:
 else:
     st.experimental_set_query_params()
     render_home_content(content=dynamic_content)
-
-st.subheader("")
-st.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
 
 # workaround to hide hamburger menu, header and footer
 # https://github.com/streamlit/streamlit/issues/395

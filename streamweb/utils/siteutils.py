@@ -68,14 +68,13 @@ def load_modules(module_loader: ModuleLoader, feed: bool = False) -> List[Module
         module = importlib.reload(module)
         loaded_modules.append(module)
 
+    content = sorted(loaded_modules, key=lambda x: x.content_date, reverse=True)
+
     # when content modules are reloaded, refresh the rss/atom feeds
     if feed:
-        create_feed(
-            sorted(loaded_modules, key=lambda x: x.content_date, reverse=False),
-            module_loader.package_name,
-        )
+        create_feed(content, module_loader.package_name)
 
-    return sorted(loaded_modules, key=lambda x: x.content_date, reverse=True)
+    return content
 
 
 def render_content_by_click(

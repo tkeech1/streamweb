@@ -2,8 +2,6 @@
 
 Streamweb is a template for creating a blog or portfolio site based on [Steamlit](http://streamlit.io). Streamweb allows you to combine multiple Streamlit dashboards into a single web site. It also enables interactive blog posts that allow users to modify content using Streamlit widgets. Issues and PRs for improvements are welcome!
 
-### Quickstart
-
 #### Step 1: Clone the repo
     git clone https://github.com/tkeech1/streamweb
     cd streamweb
@@ -32,7 +30,7 @@ To create a new layout, copy one of the existing layouts and add it to the `stre
     streamlit run layout_my_new_layout.py
 
 #### Content
-Streamweb was built to mimic static site generators such as [Hugo](https://gohugo.io/). Content is stored in Python modules which are stored in Python packages under the `streamweb` directory on the filesystem; a database isn't necessary. In the examples, content is separated into two types, static content and dynamic content. Static content, stored in the `static` package, is intended for content that doesn't change frequently such as an "About Me" page. Dynamic content, stored in the `dynamic` package is intended for content that's updated frequently such as blog posts. Users can create new Python packages containing content under the `streamweb` and load them as described below.
+Streamweb was built to mimic static site generators such as [Hugo](https://gohugo.io/). Content is stored in Python modules which are stored in Python packages under the `streamweb` directory on the filesystem; a database isn't necessary. In the examples, content is separated into two types, static content and dynamic content. Static content, stored in the `static` package, is intended for content that doesn't change frequently such as an "About Me" page. Dynamic content, stored in the `dynamic` package is intended for content that's updated frequently such as blog posts. Users can create new Python packages containing content under the `streamweb` directory and load them as described below.
 
 ##### Content Loading
 In a layout, content modules are loaded by calling the `load_content('package_name')` function. This function returns a list of Python modules which can be iterated over and displayed in the layout.

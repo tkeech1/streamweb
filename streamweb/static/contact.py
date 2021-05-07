@@ -1,10 +1,11 @@
 import streamlit as st
 import datetime
+import pytz
 
 long_title = "Contact"
 short_title = "contact"
-key = 9995
-content_date = datetime.date(2021, 4, 7)
+key = 9994
+content_date = datetime.datetime(2021, 4, 7).astimezone(pytz.timezone("US/Eastern"))
 
 
 def render():

@@ -1,4 +1,3 @@
-from distutils.command.config import config
 import streamlit as st
 from feedgen.feed import FeedGenerator
 from typing import List
@@ -8,16 +7,14 @@ import site_config
 import os
 
 
-def create_feed(content: List[ModuleType], package_name: str) -> None:
+def create_feed(content: List[ModuleType], feed_name: str) -> None:
+    fg = create_feed_generator(content)
+    create_feed_file(fg, feed_name)
 
-    # Create a directory within the streamlit static asset directory
-    STREAMLIT_STATIC_PATH = pathlib.Path(st.__path__[0]) / "static"
-    FEEDS_PATH = STREAMLIT_STATIC_PATH / "feeds"
-    if not FEEDS_PATH.is_dir():
-        FEEDS_PATH.mkdir()
 
+def create_feed_generator(content: List[ModuleType]) -> FeedGenerator:
     fg = FeedGenerator()
-    fg.id(site_config.website_title)
+    fg.id(site_config.website_id)
     fg.title(site_config.website_title)
     fg.description(site_config.website_description)
     fg.author(site_config.website_author)
@@ -32,5 +29,17 @@ def create_feed(content: List[ModuleType], package_name: str) -> None:
         fe.description(content.long_title)
         fe.link(href=content.long_title)
 
-    fg.atom_file(str(FEEDS_PATH / f"{package_name.replace(os.path.sep, '_')}_atom.xml"))
-    fg.rss_file(str(FEEDS_PATH / f"{package_name.replace(os.path.sep, '_')}_rss.xml"))
+    return fg
+
+
+def create_feed_file(fg: FeedGenerator, feed_file_name: str) -> None:
+    # Create a directory within the streamlit static asset directory
+    STREAMLIT_STATIC_PATH = pathlib.Path(st.__path__[0]) / "static"
+    FEEDS_PATH = STREAMLIT_STATIC_PATH / "feeds"
+    if not FEEDS_PATH.is_dir():
+        FEEDS_PATH.mkdir()
+
+    fg.atom_file(
+        str(FEEDS_PATH / f"{feed_file_name.replace(os.path.sep, '_')}_atom.xml")
+    )
+    fg.rss_file(str(FEEDS_PATH / f"{feed_file_name.replace(os.path.sep, '_')}_rss.xml"))

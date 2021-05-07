@@ -29,6 +29,9 @@ def render_home_content(content: List[ModuleType]) -> None:
             with expander:
                 module.render()
 
+    st.subheader("")
+    st.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
+
 
 def create_buttons(
     content: List[ModuleType], number_items_to_display: int
@@ -68,9 +71,6 @@ st.sidebar.subheader("Recent Posts")
 dynamic_content_button_click = create_buttons(
     dynamic_content, recent_dynamic_content_list_length
 )
-
-st.sidebar.subheader("")
-st.sidebar.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
 
 # navigation logic -determines what to display in the main content area
 if home_button:
