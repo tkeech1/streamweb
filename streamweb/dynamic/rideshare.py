@@ -3,6 +3,7 @@ import datetime
 import pytz
 import pandas as pd
 import numpy as np
+from utils.metrics import log_runtime
 
 short_title = "Rideshare Analysis"
 long_title = "Rideshare Pickups in NYC"
@@ -22,6 +23,7 @@ def load_data(nrows):
     return data
 
 
+@log_runtime
 def render():
     st.markdown(f"## [{long_title}](/?content={key})")
     st.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))

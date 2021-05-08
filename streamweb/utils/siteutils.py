@@ -1,7 +1,4 @@
-"""Main module."""
-
 import streamlit as st
-
 import importlib
 import os
 from os.path import basename, isfile, join
@@ -9,6 +6,9 @@ import glob
 from typing import List, Tuple
 from types import ModuleType
 from utils.feed import create_feed
+import logging
+
+logger = logging.getLogger(__name__)
 
 # https://docs.streamlit.io/en/stable/caching.html#the-hash-funcs-parameter
 
@@ -46,6 +46,9 @@ def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, int]:
 # since last load
 @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
 def load_modules(module_loader: ModuleLoader, feed: bool = False) -> List[ModuleType]:
+
+    logging.info(f"loading content modules in '{module_loader.package_name}' package ")
+
     importlib.invalidate_caches()
 
     all_modules = []
@@ -96,7 +99,6 @@ def render_content_by_click(
             st.write(f"{e}")
 
 
-# TODO - print error messages to screen in dev mode
 def render_content_by_key(
     content: List[ModuleType], content_key: str, environment: str = "dev"
 ) -> int:

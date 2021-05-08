@@ -3,6 +3,7 @@ import datetime
 import pytz
 import pandas as pd
 import numpy as np
+from utils.metrics import log_runtime
 
 long_title = "Streamlit Example Dashboard"
 short_title = "Streamlit Example Dashboard"
@@ -10,6 +11,7 @@ key = 4
 content_date = datetime.datetime(2021, 4, 8).astimezone(pytz.timezone("US/Eastern"))
 
 
+@log_runtime
 def render():
     st.markdown(f"## [{long_title}](/?content={key})")
     st.write(content_date.strftime("%m/%d/%Y"))

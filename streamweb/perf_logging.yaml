@@ -1,0 +1,19 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+    perf:
+        format: "%(asctime)s,%(message)s"
+
+handlers:
+    file_handler:
+        class: logging.FileHandler
+        level: INFO
+        formatter: perf
+        filename: perf_metrics.log
+        encoding: utf8
+
+loggers:
+    perf_logger:
+        level: INFO
+        handlers: [file_handler]

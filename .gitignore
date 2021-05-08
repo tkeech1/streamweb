@@ -5,3 +5,4 @@ __pycache__
 
 *tmp*
 concat_csv.py*
+*.log

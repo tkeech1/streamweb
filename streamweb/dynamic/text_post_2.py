@@ -1,6 +1,7 @@
 import streamlit as st
 import datetime
 import pytz
+from utils.metrics import log_runtime
 
 short_title = "2nd post"
 long_title = "2nd Post"
@@ -8,6 +9,7 @@ key = 2
 content_date = datetime.datetime(2021, 4, 2).astimezone(pytz.timezone("US/Eastern"))
 
 
+@log_runtime
 def render():
     st.markdown(f"## [{long_title}](/?content={key})")
     st.write(content_date.strftime("%m/%d/%Y"))
