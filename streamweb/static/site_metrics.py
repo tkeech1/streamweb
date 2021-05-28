@@ -2,7 +2,6 @@ import streamlit as st
 import datetime
 import pytz
 import pandas as pd
-import numpy as np
 from utils.metrics import log_runtime
 
 short_title = "metrics"

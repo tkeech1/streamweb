@@ -21,6 +21,6 @@ RUN pip3 install black flake8 mypy pytest
 
 USER $USERNAME
 
-RUN pip3 install --user streamlit
+RUN pip3 install --user streamlit feedgen pyyaml
 
 ENV PATH="${PATH}:/home/${USERNAME}/.local/bin"

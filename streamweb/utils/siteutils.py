@@ -1,29 +1,37 @@
 import streamlit as st
 import importlib
+from feedgen.feed import FeedGenerator
 import os
 from os.path import basename, isfile, join
+from tornado.httputil import HTTPServerRequest
 import glob
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from types import ModuleType
-from utils.feed import create_feed
+from streamlit.server.server import Server
 import logging
+from utils.feed import create_feed_file, FeedType
+
 
 logger = logging.getLogger(__name__)
 
 # https://docs.streamlit.io/en/stable/caching.html#the-hash-funcs-parameter
 
-production = "prd"
+production_label = "prd"
 
 
 class ModuleLoader:
-    def __init__(self, package_name, environment):
+    def __init__(self, package_name: str, environment: str):
         self.package_name = package_name
         self.environment = environment
 
 
-def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, int]:
+def get_request() -> HTTPServerRequest:
+    return list(Server.get_current()._session_info_by_id.values())[0].ws.request
 
-    if module_loader.environment == production:
+
+def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, float]:
+
+    if module_loader.environment == production_label:
         # skip dynamic module loading
         return (module_loader.package_name, 0)
     else:
@@ -41,84 +49,173 @@ def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, int]:
         return (module_loader.package_name, last_modified)
 
 
-# TODO - This function reloads all modules if any module has
-# changed. Change to load only those modules that have changed
-# since last load
-@st.cache(hash_funcs={ModuleLoader: hash_module_modified})
-def load_modules(module_loader: ModuleLoader, feed: bool = False) -> List[ModuleType]:
+class StreamwebSite:
+    def __init__(
+        self,
+        website_id: str,
+        website_title: str,
+        website_description: str,
+        website_author: Dict[str, str],
+        website_url: str,
+        website_language: str,
+        environment: str = "dev",
+    ):
+        self.website_id = website_id
+        self.website_title = website_title
+        self.website_description = website_description
+        self.website_author = website_author
+        self.website_url = website_url
+        self.website_language = website_language
+        self.environment = environment
+        self.content_modules = {}
+        self.rss_feed = {}
+        self.atom_feed = {}
 
-    logging.info(f"loading content modules in '{module_loader.package_name}' package ")
-
-    importlib.invalidate_caches()
-
-    all_modules = []
-    if os.path.isdir(module_loader.package_name):
-        modules = glob.glob(join(module_loader.package_name, "*.py"))
-        all_modules = [
-            basename(f)[:-3]
-            for f in modules
-            if isfile(f) and not f.endswith("__init__.py")
-        ]
-
-    loaded_modules = []
-    for module_name in all_modules:
-        module = importlib.import_module(
-            name=f".{module_name}",
-            package=module_loader.package_name.replace(os.path.sep, "."),
+    def load_content(self, package_name: str) -> None:
+        content_loader = ModuleLoader(
+            package_name=package_name, environment=self.environment
         )
-        # if the module has already been loaded, reload() so the import system sees the changes to the module
-        # changes to modules were not visible without the call to reload()
-        module = importlib.reload(module)
-        loaded_modules.append(module)
 
-    content = sorted(loaded_modules, key=lambda x: x.content_date, reverse=True)
+        self.content_modules[package_name] = self.load_modules(content_loader)
+        self.atom_feed[package_name], self.rss_feed[package_name] = self.load_feeds(
+            content_loader
+        )
 
-    # when content modules are reloaded, refresh the rss/atom feeds
-    if feed:
-        create_feed(content, module_loader.package_name)
+    # TODO - This function reloads all modules if any module has
+    # changed. Change to load only those modules that have changed
+    # since last load
+    @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
+    def load_modules(self, module_loader: ModuleLoader) -> List[ModuleType]:
 
-    return content
+        logging.info(
+            f"loading content modules in '{module_loader.package_name}' package "
+        )
 
+        importlib.invalidate_caches()
 
-def render_content_by_click(
-    content: List[ModuleType], button_click: List[bool], environment: str = "dev"
-) -> int:
-    try:
-        if any(button_click):
-            for i, clicked in enumerate(button_click):
-                if clicked:
-                    content = content[i]
-                    content.render()
-                    return content.key
+        all_modules = []
+        if os.path.isdir(module_loader.package_name):
+            modules = glob.glob(join(module_loader.package_name, "*.py"))
+            all_modules = [
+                basename(f)[:-3]
+                for f in modules
+                if isfile(f) and not f.endswith("__init__.py")
+            ]
 
-        raise Exception("Content not found")
-    except Exception as e:
-        if environment == production:
-            st.write(f"Content not found.")
-        else:
-            st.write(f"{e}")
+        loaded_modules = []
+        for module_name in all_modules:
+            module = importlib.import_module(
+                name=f".{module_name}",
+                package=module_loader.package_name.replace(os.path.sep, "."),
+            )
+            # if the module has already been loaded, reload() so the
+            # import system sees the changes to the module
+            # changes to modules were not visible without the call to reload()
+            module = importlib.reload(module)
+            loaded_modules.append(module)
 
+        return sorted(loaded_modules, key=lambda x: x.content_date, reverse=True)
 
-def render_content_by_key(
-    content: List[ModuleType], content_key: str, environment: str = "dev"
-) -> int:
-    try:
-        if content_key:
-            for content in content:
-                if int(content_key) == content.key:
-                    content.render()
-                    return content.key
+    # TODO - This function reloads all modules if any module has
+    # changed. Change to load only those modules that have changed
+    # since last load
+    @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
+    def load_feeds(self, module_loader: ModuleLoader) -> Tuple[str, str]:
 
-        raise Exception("Content not found")
-    except Exception as e:
-        if environment == production:
-            st.write(f"Content not found.")
-        else:
-            st.write(f"{e}")
+        logging.info(
+            f"loading feeds for modules in '{module_loader.package_name}' package "
+        )
 
+        rss_feed = self.create_feed(
+            module_loader.package_name,
+            module_loader.package_name.replace(os.sep, "_"),
+            FeedType.RSS,
+        )
 
-def load_content(
-    package_name: str, environment: str, feed: bool = False
-) -> List[ModuleType]:
-    content_loader = ModuleLoader(package_name=package_name, environment=environment)
-    return load_modules(content_loader, feed)
+        atom_feed = self.create_feed(
+            module_loader.package_name,
+            module_loader.package_name.replace(os.sep, "_"),
+            FeedType.ATOM,
+        )
+
+        return atom_feed, rss_feed
+
+    def create_buttons(
+        self, content_name, number_items_to_display: int = 999999
+    ) -> List[bool]:
+        # this is a workaround since it doesn't appear possible to
+        # get the key of the button that was clicked
+        # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
+        button_click_flags = []
+        for c in self.content_modules[content_name][
+            : min(number_items_to_display, len(self.content_modules[content_name]))
+        ]:
+            button_click_flags.append(st.sidebar.button(c.short_title, key=c.key))
+        return button_click_flags
+
+    def render_content_by_click(
+        self,
+        content_name: str,
+        button_click: List[bool],
+    ) -> int:
+        try:
+            if any(button_click):
+                for i, clicked in enumerate(button_click):
+                    if clicked:
+                        content = self.content_modules[content_name][i]
+                        content.render()
+                        return content.key
+
+            raise Exception("Content not found")
+        except Exception as e:
+            if self.environment == production_label:
+                st.write("Content not found.")
+            else:
+                st.write(f"{e}")
+            return -1
+
+    def render_content_by_key(self, content_name: str, content_key: str) -> int:
+        try:
+            if content_key:
+                for content in self.content_modules[content_name]:
+                    if int(content_key) == content.key:
+                        content.render()
+                        return content.key
+
+            raise Exception("Content not found")
+        except Exception as e:
+            if self.environment == production_label:
+                st.write("Content not found.")
+            else:
+                st.write(f"{e}")
+            return -1
+
+    def create_feed_generator(self, content_name: str) -> FeedGenerator:
+        fg = FeedGenerator()
+        fg.id(self.website_id)
+        fg.title(self.website_title)
+        fg.description(self.website_description)
+        fg.author(self.website_author)
+        fg.link(href=self.website_url, rel="alternate")
+        fg.language(self.website_language)
+
+        for c in self.content_modules[content_name]:
+            fe = fg.add_entry()
+            fe.id(str(c.key))
+            fe.title(c.long_title)
+            fe.published(c.content_date)
+            fe.description(c.long_title)
+            fe.link(href=c.long_title)
+
+        return fg
+
+    def create_feed(
+        self,
+        content_name: str,
+        feed_name: str,
+        feed_type: FeedType,
+    ) -> str:
+        fg = self.create_feed_generator(
+            content_name,
+        )
+        return create_feed_file(fg, feed_name, feed_type)

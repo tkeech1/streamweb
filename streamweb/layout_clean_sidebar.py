@@ -1,114 +1,98 @@
 import streamlit as st
-import sys
-from typing import List
-from types import ModuleType
-import site_config
-from utils.metrics import log_runtime
-from utils.siteutils import (
-    load_content,
-    render_content_by_click,
-    render_content_by_key,
-)
-
 import logging
+import site_config
+from utils.siteutils import StreamwebSite
+from utils.metrics import log_runtime
+
+st.set_page_config(layout="wide")
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-st.set_page_config(layout="wide")
+sws: StreamwebSite = StreamwebSite(
+    site_config.website_id,
+    site_config.website_title,
+    site_config.website_description,
+    site_config.website_author,
+    site_config.website_url,
+    site_config.website_language,
+    site_config.environment,
+)
 
 
 def home():
-    recent_dynamic_content_list_length = 3
-
     @log_runtime
-    def render_home_content(content: List[ModuleType]) -> None:
+    def render_home_content(content_name: str) -> None:
         title_col1, title_col2 = st.beta_columns([2, 1])
         title_col1.header("Posts")
 
         search_text = title_col2.text_input("Search Posts", "")
 
-        for module in content:
+        for module in sws.content_modules[content_name]:
             display = True
             if search_text:
                 if search_text.lower() not in module.long_title.lower():
                     display = False
             if display:
-                link = f"<a href='/?content={module.key}' target='_self'>{module.long_title}</a>"
+                link = (
+                    f"<a href='/?content={module.key}' target='_self'>"
+                    f"{module.long_title}</a>"
+                )
                 st.markdown(
                     f'{module.content_date.strftime("%Y.%m.%d")} - {link}',
                     unsafe_allow_html=True,
                 )
 
         st.subheader("")
-        st.markdown("[RSS](feeds/dynamic_rss.xml) | [Atom](feeds/dynamic_atom.xml)")
-
-    def create_buttons(
-        content: List[ModuleType], number_items_to_display: int
-    ) -> List[bool]:
-        # this is a workaround since it doesn't appear possible to
-        # get the key of the button that was clicked
-        # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
-        button_click_flags = []
-        for c in content[:number_items_to_display]:
-            button_click_flags.append(st.sidebar.button(c.short_title, key=c.key))
-        return button_click_flags
-
-    environment = None
-    if len(sys.argv) > 1:
-        environment = sys.argv[1]
+        st.markdown(
+            f"[RSS]({sws.rss_feed[content_name]}) | [Atom]({sws.atom_feed[content_name]})"
+        )
 
     content_id = None
     query_params = st.experimental_get_query_params()
     if "content" in query_params:
         content_id = query_params["content"][0]
 
-    static_content = load_content("static", environment, feed=False)
-    dynamic_content = load_content("dynamic", environment, feed=True)
+    sws.load_content("static")
+    sws.load_content("dynamic")
 
     st.title(site_config.website_title)
 
     home_button = st.sidebar.button("home")
 
-    static_content_button_click = create_buttons(static_content, len(static_content))
+    static_content_button_click = sws.create_buttons("static")
 
     st.sidebar.subheader("")
     st.sidebar.subheader("Recent Posts")
-    dynamic_content_button_click = create_buttons(
-        dynamic_content, recent_dynamic_content_list_length
-    )
+    dynamic_content_button_click = sws.create_buttons("dynamic", 3)
 
     # navigation logic -determines what to display in the main content area
     if home_button:
         # the home_button was clicked
         st.experimental_set_query_params()
-        render_home_content(content=dynamic_content)
+        render_home_content(content_name="dynamic")
     elif any(static_content_button_click):
         # static content button was clicked
         st.experimental_set_query_params()
-        render_content_by_click(
-            content=static_content,
+        sws.render_content_by_click(
+            "static",
             button_click=static_content_button_click,
-            environment=environment,
         )
     elif any(dynamic_content_button_click):
         # dynamic content button was clicked
-        content_id = render_content_by_click(
-            content=dynamic_content,
+        content_id = sws.render_content_by_click(
+            content_name="dynamic",
             button_click=dynamic_content_button_click,
-            environment=environment,
         )
         # set the content_id in the URL in case the user wants to bookmark
         st.experimental_set_query_params(content=content_id)
     elif content_id:
         # the url contains a content_id (bookmark or direct link to page)
-        render_content_by_key(
-            content=dynamic_content, content_key=content_id, environment=environment
-        )
+        sws.render_content_by_key("dynamic", content_key=content_id)
     else:
         # the user browsed to the home page (didn't click the home button)
         st.experimental_set_query_params()
-        render_home_content(content=dynamic_content)
+        render_home_content(content_name="dynamic")
 
     # workaround to hide hamburger menu, header and footer
     # https://github.com/streamlit/streamlit/issues/395

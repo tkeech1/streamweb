@@ -3,8 +3,6 @@ import datetime
 import pytz
 from utils.metrics import log_runtime
 
-from utils.siteutils import load_content
-
 long_title = "About"
 short_title = "about"
 key = 9998

@@ -1,41 +1,103 @@
 """Tests for `stsiteutils` package."""
 
 import importlib
-from utils.siteutils import (
-    load_content,
-    render_content_by_click,
-    render_content_by_key,
-)
+from utils.siteutils import StreamwebSite
+from typing import Tuple
+from streamlit import caching
+import pytest
+import tests.site_config as site_config
 
 
-def test_load_content():
-    assert load_content("tests/testpkg1", "") == [
+@pytest.fixture
+def streamwebsite_dev():
+    yield StreamwebSite("test", "test", "test", {"name": "test"}, "test", "test", "")
+    caching.clear_cache()
+
+
+@pytest.fixture
+def streamwebsite_prd():
+    yield StreamwebSite("test", "test", "test", {"name": "test"}, "test", "test", "prd")
+    caching.clear_cache()
+
+
+@pytest.fixture
+def sws_feedgen():
+    yield StreamwebSite(
+        "test_id",
+        "TEST Web Site Name",
+        "TEST A description of the web site.",
+        {"name": "test"},
+        "test",
+        "test",
+        "prd",
+    )
+    caching.clear_cache()
+
+
+def test_load_content_dev(streamwebsite_dev: StreamwebSite):
+
+    streamwebsite_dev.load_content("tests/testpkg1")
+    assert streamwebsite_dev.content_modules["tests/testpkg1"] == [
         importlib.import_module(name=f".module2", package="tests.testpkg1"),
         importlib.import_module(name=f".module1", package="tests.testpkg1"),
     ]
-    assert load_content("tests/testpkg1", "prd") == [
+
+    streamwebsite_dev.load_content("tests/testpkg2")
+    assert streamwebsite_dev.content_modules["tests/testpkg2"] == [
+        importlib.import_module(name=f".module3", package="tests.testpkg2")
+    ]
+
+
+def test_load_content_prd(streamwebsite_prd: StreamwebSite):
+
+    streamwebsite_prd.load_content("tests/testpkg1")
+    assert streamwebsite_prd.content_modules["tests/testpkg1"] == [
         importlib.import_module(name=f".module2", package="tests.testpkg1"),
         importlib.import_module(name=f".module1", package="tests.testpkg1"),
     ]
-    assert load_content("tests/testpkg2", "") == [
+
+    streamwebsite_prd.load_content("tests/testpkg2")
+    assert streamwebsite_prd.content_modules["tests/testpkg2"] == [
         importlib.import_module(name=f".module3", package="tests.testpkg2")
     ]
-    assert load_content("tests/testpkg2", "prd") == [
-        importlib.import_module(name=f".module3", package="tests.testpkg2")
-    ]
 
 
-def test_render_content_by_click():
-    content = load_content("tests/testpkg1", "")
-    assert render_content_by_click(content, [True, False]) == 2
-    assert render_content_by_click(content, [False, True]) == 1
-    assert render_content_by_click(content, [False, False]) == None
-    assert render_content_by_click(content, [False, False], "prd") == None
+def test_render_content_by_click(streamwebsite_dev: StreamwebSite):
+    streamwebsite_dev.load_content("tests/testpkg1")
+    assert (
+        streamwebsite_dev.render_content_by_click("tests/testpkg1", [True, False]) == 2
+    )
+    assert (
+        streamwebsite_dev.render_content_by_click("tests/testpkg1", [False, True]) == 1
+    )
+    assert (
+        streamwebsite_dev.render_content_by_click("tests/testpkg1", [False, False])
+        == -1
+    )
 
 
-def test_render_content_by_key():
-    content = load_content("tests/testpkg1", "")
-    assert render_content_by_key(content, "2") == 2
-    assert render_content_by_key(content, "1") == 1
-    assert render_content_by_key(content, "4") == None
-    assert render_content_by_key(content, "4", "prd") == None
+def test_render_content_by_key(streamwebsite_dev: StreamwebSite):
+    streamwebsite_dev.load_content("tests/testpkg1")
+    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", "2") == 2
+    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", "1") == 1
+    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", "4") == -1
+
+
+def test_create_feed_generator(sws_feedgen: StreamwebSite):
+    sws_feedgen.load_content("tests/testpkg1")
+    fg = sws_feedgen.create_feed_generator("tests/testpkg1")
+    assert fg.title() == site_config.website_title
+    assert fg.id() == site_config.website_id
+    assert fg.description() == site_config.website_description
+
+    # need to sort the content since the fg.item() method returns
+    # content by date ascending
+    content = sorted(
+        sws_feedgen.content_modules["tests/testpkg1"],
+        key=lambda x: x.content_date,
+        reverse=False,
+    )
+    for fe, content_item in zip(fg.item(), content):
+        assert fe.id() == str(content_item.key)
+        assert fe.title() == content_item.long_title
+        assert fe.pubDate() == content_item.content_date
