@@ -10,5 +10,5 @@ content_date = datetime.datetime(2021, 4, 7).astimezone(pytz.timezone("US/Easter
 
 
 @log_runtime
-def render():
-    st.header(f"{long_title}")
+def render(location):
+    location.header(f"{long_title}")

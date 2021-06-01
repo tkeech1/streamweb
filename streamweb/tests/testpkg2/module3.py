@@ -7,5 +7,5 @@ key = 3
 content_date = datetime.datetime(2021, 1, 3).astimezone(pytz.timezone("US/Eastern"))
 
 
-def render():
+def render(location):
     pass

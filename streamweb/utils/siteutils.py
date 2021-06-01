@@ -3,13 +3,12 @@ import importlib
 from feedgen.feed import FeedGenerator
 import os
 from os.path import basename, isfile, join
-from tornado.httputil import HTTPServerRequest
 import glob
 from typing import List, Tuple, Dict
 from types import ModuleType
-from streamlit.server.server import Server
 import logging
 from utils.feed import create_feed_file, FeedType
+from utils.metrics import log_runtime
 
 
 logger = logging.getLogger(__name__)
@@ -23,10 +22,6 @@ class ModuleLoader:
     def __init__(self, package_name: str, environment: str):
         self.package_name = package_name
         self.environment = environment
-
-
-def get_request() -> HTTPServerRequest:
-    return list(Server.get_current()._session_info_by_id.values())[0].ws.request
 
 
 def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, float]:
@@ -141,7 +136,7 @@ class StreamwebSite:
         return atom_feed, rss_feed
 
     def create_buttons(
-        self, content_name, number_items_to_display: int = 999999
+        self, content_name, location: st, number_items_to_display: int = 999999
     ) -> List[bool]:
         # this is a workaround since it doesn't appear possible to
         # get the key of the button that was clicked
@@ -150,12 +145,42 @@ class StreamwebSite:
         for c in self.content_modules[content_name][
             : min(number_items_to_display, len(self.content_modules[content_name]))
         ]:
-            button_click_flags.append(st.sidebar.button(c.short_title, key=c.key))
+            button_click_flags.append(location.button(c.short_title, key=c.key))
         return button_click_flags
+
+    @log_runtime
+    def create_link_list(
+        self, content_name: str, location: st, item_label: str = "Posts"
+    ) -> None:
+        title_col1, title_col2 = st.beta_columns([2, 1])
+        title_col1.header(item_label)
+
+        search_text = title_col2.text_input(f"Search {item_label}", "")
+
+        for module in self.content_modules[content_name]:
+            display = True
+            if search_text:
+                if search_text.lower() not in module.long_title.lower():
+                    display = False
+            if display:
+                link = (
+                    f"<a href='/?content={module.key}' target='_self'>"
+                    f"{module.long_title}</a>"
+                )
+                location.markdown(
+                    f'{module.content_date.strftime("%Y.%m.%d")} - {link}',
+                    unsafe_allow_html=True,
+                )
+
+        location.subheader("")
+        location.markdown(
+            f"[RSS]({self.rss_feed[content_name]}) | [Atom]({self.atom_feed[content_name]})"
+        )
 
     def render_content_by_click(
         self,
         content_name: str,
+        location: st,
         button_click: List[bool],
     ) -> int:
         try:
@@ -163,31 +188,33 @@ class StreamwebSite:
                 for i, clicked in enumerate(button_click):
                     if clicked:
                         content = self.content_modules[content_name][i]
-                        content.render()
+                        content.render(location)
                         return content.key
 
             raise Exception("Content not found")
         except Exception as e:
             if self.environment == production_label:
-                st.write("Content not found.")
+                location.write("Content not found.")
             else:
-                st.write(f"{e}")
+                location.write(f"{e}")
             return -1
 
-    def render_content_by_key(self, content_name: str, content_key: str) -> int:
+    def render_content_by_key(
+        self, content_name: str, location: st, content_key: str
+    ) -> int:
         try:
             if content_key:
                 for content in self.content_modules[content_name]:
                     if int(content_key) == content.key:
-                        content.render()
+                        content.render(location)
                         return content.key
 
             raise Exception("Content not found")
         except Exception as e:
             if self.environment == production_label:
-                st.write("Content not found.")
+                location.write("Content not found.")
             else:
-                st.write(f"{e}")
+                location.write(f"{e}")
             return -1
 
     def create_feed_generator(self, content_name: str) -> FeedGenerator:

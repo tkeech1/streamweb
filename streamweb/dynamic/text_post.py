@@ -10,11 +10,11 @@ content_date = datetime.datetime(2021, 4, 1).astimezone(pytz.timezone("US/Easter
 
 
 @log_runtime
-def render():
-    st.markdown(f"## [{long_title}](/?content={key})")
-    st.write(content_date.strftime("%m/%d/%Y"))
+def render(location: st):
+    location.markdown(f"## [{long_title}](/?content={key})")
+    location.write(content_date.strftime("%m/%d/%Y"))
 
-    st.write(
+    location.write(
         "Lorem ipsum dolor sit amet, consectetur adipiscing"
         " elit, sed do eiusmod tempor incididunt ut labore et"
         " dolore magna aliqua. Ut enim ad minim veniam, quis "

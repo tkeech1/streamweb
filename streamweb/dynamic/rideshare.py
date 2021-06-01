@@ -24,42 +24,44 @@ def load_data(nrows):
 
 
 @log_runtime
-def render():
-    st.markdown(f"## [{long_title}](/?content={key})")
-    st.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
+def render(location: st):
+    location.markdown(f"## [{long_title}](/?content={key})")
+    location.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
 
     # Create a text element and let the reader know the data is loading.
-    data_load_state = st.text("Loading data...")
+    data_load_state = location.text("Loading data...")
     # Load 10,000 rows of data into the dataframe.
     data = load_data(10000)
     # Notify the reader that the data was successfully loaded.
     data_load_state.text("")
 
-    if st.checkbox("Show raw data"):
-        st.subheader("Raw data")
-        st.write(data)
+    if location.checkbox("Show raw data"):
+        location.subheader("Raw data")
+        location.write(data)
 
-    st.subheader("Number of pickups by hour")
+    location.subheader("Number of pickups by hour")
     hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0, 24))[0]
-    st.bar_chart(hist_values)
+    location.bar_chart(hist_values)
 
-    hour_to_filter = st.slider("hour", 0, 23, 17)  # min: 0h, max: 23h, default: 17h
+    hour_to_filter = location.slider(
+        "hour", 0, 23, 17
+    )  # min: 0h, max: 23h, default: 17h
     filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
-    # st.subheader(f"Map of all pickups at {hour_to_filter}:00")
-    # st.map(filtered_data)
+    # location.subheader(f"Map of all pickups at {hour_to_filter}:00")
+    # location.map(filtered_data)
 
     dataframe = pd.DataFrame(
         np.random.randn(10, 20), columns=("col %d" % i for i in range(20))
     )
 
-    st.subheader("Highlighted Table")
-    st.dataframe(dataframe.style.highlight_max(axis=0))
+    location.subheader("Highlighted Table")
+    location.dataframe(dataframe.style.highlight_max(axis=0))
 
-    st.subheader("Static Table")
+    location.subheader("Static Table")
     dataframe = pd.DataFrame(
         np.random.randn(10, 5), columns=("col %d" % i for i in range(5))
     )
-    st.table(dataframe)
+    location.table(dataframe)
 
     del data
     del dataframe

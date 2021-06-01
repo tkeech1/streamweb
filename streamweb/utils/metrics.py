@@ -2,7 +2,8 @@ from functools import wraps
 import time
 import logging
 import logging.config
-from utils.siteutils import get_request
+from streamlit.server.server import Server
+from tornado.httputil import HTTPServerRequest
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,10 @@ perf_logger = logging.getLogger("perf_logger")
 perf_logger.propagate = False
 
 
+def get_request() -> HTTPServerRequest:
+    return list(Server.get_current()._session_info_by_id.values())[0].ws.request
+
+
 def log_runtime(fn):
     @wraps(fn)
     def measure_time(*args, **kwargs):
@@ -27,7 +32,7 @@ def log_runtime(fn):
         t2 = time.time()
         # time is logged in seconds
         perf_logger.info(
-            f"{fn.__module__},{round(t2 - t1,4)}"
+            f"{fn.__module__}.{fn.__name__},{round(t2 - t1,4)}"
             f",{req.headers['User-Agent'].replace(',','')}"
             f",{req.headers['Origin'].replace(',','')}"
             f",{req.remote_ip.replace(',','')}"

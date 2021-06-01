@@ -2,8 +2,8 @@
 
 import importlib
 from utils.siteutils import StreamwebSite
-from typing import Tuple
 from streamlit import caching
+import streamlit as st
 import pytest
 import tests.site_config as site_config
 
@@ -65,22 +65,24 @@ def test_load_content_prd(streamwebsite_prd: StreamwebSite):
 def test_render_content_by_click(streamwebsite_dev: StreamwebSite):
     streamwebsite_dev.load_content("tests/testpkg1")
     assert (
-        streamwebsite_dev.render_content_by_click("tests/testpkg1", [True, False]) == 2
+        streamwebsite_dev.render_content_by_click("tests/testpkg1", st, [True, False])
+        == 2
     )
     assert (
-        streamwebsite_dev.render_content_by_click("tests/testpkg1", [False, True]) == 1
+        streamwebsite_dev.render_content_by_click("tests/testpkg1", st, [False, True])
+        == 1
     )
     assert (
-        streamwebsite_dev.render_content_by_click("tests/testpkg1", [False, False])
+        streamwebsite_dev.render_content_by_click("tests/testpkg1", st, [False, False])
         == -1
     )
 
 
 def test_render_content_by_key(streamwebsite_dev: StreamwebSite):
     streamwebsite_dev.load_content("tests/testpkg1")
-    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", "2") == 2
-    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", "1") == 1
-    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", "4") == -1
+    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", st, "2") == 2
+    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", st, "1") == 1
+    assert streamwebsite_dev.render_content_by_key("tests/testpkg1", st, "4") == -1
 
 
 def test_create_feed_generator(sws_feedgen: StreamwebSite):

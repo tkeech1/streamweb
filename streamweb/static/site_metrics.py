@@ -35,35 +35,35 @@ def load_data():
 
 
 @log_runtime
-def render():
-    st.header(f"{long_title}")
-    st.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
+def render(location):
+    location.header(f"{long_title}")
+    location.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
 
-    data_load_state = st.text("Loading data...")
+    data_load_state = location.text("Loading data...")
 
     data = load_data().drop("ms", axis=1)
 
-    st.write(data.tail())
+    location.write(data.tail())
 
     data_load_state.text("")
 
-    st.subheader("Page Views")
-    st.write(data["page"].value_counts())
+    location.subheader("Page Views")
+    location.write(data["page"].value_counts())
 
     data = data.groupby(by="page")
 
-    st.write("")
+    location.write("")
 
-    st.subheader("Mean")
-    st.write(data.mean())
+    location.subheader("Mean")
+    location.write(data.mean())
 
-    st.subheader("Median")
-    st.write(data.median())
+    location.subheader("Median")
+    location.write(data.median())
 
-    st.subheader("Max")
-    st.write(data["runtime"].max())
+    location.subheader("Max")
+    location.write(data["runtime"].max())
 
-    st.subheader("Max")
-    st.write(data["requesttime"].max())
+    location.subheader("Max")
+    location.write(data["requesttime"].max())
 
     del data
