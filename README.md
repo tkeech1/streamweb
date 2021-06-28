@@ -12,7 +12,7 @@ Streamweb is a template for creating a blog or portfolio site based on [Steamlit
 
 #### Step 3: Browse to http://localhost:8501/
 
-### ocumentation
+### Documentation
 
 #### Layouts
 The `streamweb` directory contains the entry point to the application. An application can have multiple layouts, although only one can be enabled at a time. The layout determines how content will be displayed on the main screen. A layout uses standard [Streamlit syntax](https://docs.streamlit.io/en/stable/api.html) (`st.write()`, `st.markdown()`, `st.title()`, etc.) to build the display.
@@ -32,15 +32,29 @@ To create a new layout, copy one of the existing layouts and add it to the `stre
 #### Content
 Streamweb was built to mimic static site generators such as [Hugo](https://gohugo.io/). Content is stored in Python modules which are stored in Python packages under the `streamweb` directory on the filesystem; a database isn't necessary. In the examples, content is separated into two types, static content and dynamic content. Static content, stored in the `static` package, is intended for content that doesn't change frequently such as an "About Me" page. Dynamic content, stored in the `dynamic` package is intended for content that's updated frequently such as blog posts. Users can create new Python packages containing content under the `streamweb` directory and load them as described below.
 
+## Site Setup
+To create a site, create a StreamwebSite object in the layout as shown in the example:
+
+    sws: StreamwebSite = StreamwebSite(
+        site_config.website_id,
+        site_config.website_title,
+        site_config.website_description,
+        site_config.website_author,
+        site_config.website_url,
+        site_config.website_language,
+        site_config.environment,
+    )
+
+`environment` is a flag that indicates whether or not to dynamically reload content modules. If `environment=='prd'`, the dynamic content reloading is disabled. The StreamwebSite object provides a few helper methods to streamline building a site. 
+
 ##### Content Loading
-In a layout, content modules are loaded by calling the `load_content('package_name')` function. This function returns a list of Python modules which can be iterated over and displayed in the layout.
+In a layout, content modules are loaded by calling the `sws.load_content('package_name')` function. This function returns a list of Python modules which can be iterated over and displayed in the layout.
 
 In the example layouts, the content packages `static` and `dynamic` packages are loaded by the layout in the following lines. 
 
-    static_content = load_content("static", environment)
-    dynamic_content = load_content("dynamic", environment)
-
-`environment` is a flag that indicates whether or not to dynamically reload content modules. If `environment=='prd'`, the dynamic content reloading is disabled. 
+    static_content = load_content("static")
+    dynamic_content = load_content("dynamic")
+ 
 
 All content modules are cached using Streamlit's [st.cache()](https://docs.streamlit.io/en/stable/caching.html) decorator and are dynamically reloaded if the module changes. Dynamic reloading makes it easy to develop new content without having to restart Streamlit after each edit. Dynamic module reloading can be disabled by running Streamlit as shown below:
     
@@ -54,7 +68,7 @@ To create a new content package, create a new directory under the `streamweb` di
 
 To load the content inside a layout:
 
-    my_new_content = load_content("mynewpackage")
+    my_new_content = sws.load_content("mynewpackage")
 
 ##### Displaying Content
 Once you've loaded module content, you can display the content by calling the render() function of the content module.
@@ -63,27 +77,23 @@ Once you've loaded module content, you can display the content by calling the re
 
 To display a list of button links to the content:
 
-    button_click_flags = []
-    for c in content:
-        button_click_flags.append(st.button(c.short_title, key=c.key))
+    button_click_flags = sws.create_buttons("dynamic", st)
 
 This creates a list, `button_click_flags`, of `bools` that indicate which button was clicked. Unfortunately, [Streamlit doesn't appear to support getting the key of the button that was clicked](https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007) so this is a workaround.
 
-There are two helper methods for displaying content, `render_content_by_click` and `render_content_by_key`. Below is an example of rendering content based on a button click.
+There are two helper methods for displaying content, `sws.render_content_by_click` and `sws.render_content_by_key`. Below is an example of rendering content based on a button click.
 
     if any(button_click_flags):
-        render_content_by_click(
-            content=my_new_content,
-            button_click=button_click_flags,
-            environment=environment,
+        sws.render_content_by_click(
+            content_name="static",
+            location=st,
+            button_click=static_content_button_click,
         )
 
 Here is an example of rendering content based on an content key.
 
     if content_id:
-        render_content_by_key(
-            content=my_new_content, content_key=content_id, environment=environment
-        )
+        sws.render_content_by_key("dynamic", location=st, content_key=content_id)
 
 ##### Content Format
 Streamweb expects all content modules to contain the following attributes and functions:
@@ -101,5 +111,4 @@ There are several examples of [dynamic](https://github.com/tkeech1/streamweb/tre
 
 #### TODO
 * UI tests
-* Logging
 * Sphinx docs
