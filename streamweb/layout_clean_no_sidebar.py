@@ -4,6 +4,7 @@ import site_config
 from utils.siteutils import StreamwebSite
 
 st.set_page_config(layout="centered")
+# st.set_page_config(layout="wide")
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -48,7 +49,6 @@ sws: StreamwebSite = StreamwebSite(
     site_config.website_author,
     site_config.website_url,
     site_config.website_language,
-    site_config.environment,
 )
 
 content_id = ""

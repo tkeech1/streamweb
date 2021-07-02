@@ -2,7 +2,9 @@ import streamlit as st
 import logging
 import site_config
 from utils.siteutils import StreamwebSite
+from utils.metrics import log_runtime
 
+# st.set_page_config(layout="wide")
 st.set_page_config(layout="wide")
 
 logger = logging.getLogger()
@@ -19,16 +21,33 @@ def main(sws: StreamwebSite, content_id: str):
     home_button = st.sidebar.button("home")
 
     static_content_button_click = sws.create_buttons("static", st.sidebar)
+    st.sidebar.subheader("")
 
     st.sidebar.subheader("")
     st.sidebar.subheader("Recent Posts")
     dynamic_content_button_click = sws.create_buttons("dynamic", st.sidebar, 3)
 
+    @log_runtime
+    def home(location: st, sws: StreamwebSite):
+
+        location.markdown("Hi. Thanks for visiting.")
+
+        location.header("Posts")
+
+        sws.create_link_list(content_name="dynamic", location=location, search_text="")
+
+        location.subheader("")
+        location.markdown(
+            f"[RSS]({sws.rss_feed['dynamic']}) | [Atom]({sws.atom_feed['dynamic']})"
+        )
+
+    # main_col, _ = st.beta_columns([2, 1])
+
     # navigation logic - determines what to display in the main content area
     if home_button:
         # the home_button was clicked
         st.experimental_set_query_params()
-        sws.create_link_list(content_name="dynamic", location=st, item_label="Posts")
+        home(st, sws)
     elif any(static_content_button_click):
         # static content button was clicked
         st.experimental_set_query_params()
@@ -52,7 +71,7 @@ def main(sws: StreamwebSite, content_id: str):
     else:
         # the user browsed to the home page (didn't click the home button)
         st.experimental_set_query_params()
-        sws.create_link_list(content_name="dynamic", location=st, item_label="Posts")
+        home(st, sws)
 
     # workaround to hide hamburger menu, header and footer
     # https://github.com/streamlit/streamlit/issues/395
@@ -75,7 +94,6 @@ sws: StreamwebSite = StreamwebSite(
     site_config.website_author,
     site_config.website_url,
     site_config.website_language,
-    site_config.environment,
 )
 
 content_id = ""

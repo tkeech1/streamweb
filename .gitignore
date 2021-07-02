@@ -4,5 +4,4 @@ __pycache__
 .pytest_cache
 
 *tmp*
-concat_csv.py*
 *.log

@@ -5,7 +5,7 @@ import pandas as pd
 from utils.metrics import log_runtime
 
 short_title = "metrics"
-long_title = "Web Site Metrics"
+long_title = "Site Metrics"
 key = 345
 content_date = datetime.datetime(2021, 1, 1).astimezone(pytz.timezone("US/Eastern"))
 
@@ -43,22 +43,29 @@ def render(location):
 
     data = load_data().drop("ms", axis=1)
 
-    location.write(data.tail())
+    location.write(data.head())
 
     data_load_state.text("")
 
     location.subheader("Page Views")
     location.write(data["page"].value_counts())
 
-    data = data.groupby(by="page")
+    data["date"] = data["datetime"].apply(lambda x: x.split(" ")[0])
+
+    location.subheader("Page Views by Date")
+    count_by_day = (
+        data[["date", "page", "datetime"]].groupby(by=["date", "page"]).count()
+    ).reset_index()
+
+    location.write(count_by_day.head())
 
     location.write("")
 
     location.subheader("Mean")
-    location.write(data.mean())
+    location.write(data.mean().drop("query", axis=1))
 
     location.subheader("Median")
-    location.write(data.median())
+    location.write(data.median().drop("query", axis=1))
 
     location.subheader("Max")
     location.write(data["runtime"].max())

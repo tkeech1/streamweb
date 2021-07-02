@@ -148,14 +148,12 @@ class StreamwebSite:
             button_click_flags.append(location.button(c.short_title, key=c.key))
         return button_click_flags
 
-    @log_runtime
     def create_link_list(
-        self, content_name: str, location: st, item_label: str = "Posts"
+        self,
+        content_name: str,
+        location: st,
+        search_text: str,
     ) -> None:
-        title_col1, title_col2 = st.beta_columns([2, 1])
-        title_col1.header(item_label)
-
-        search_text = title_col2.text_input(f"Search {item_label}", "")
 
         for module in self.content_modules[content_name]:
             display = True
@@ -171,11 +169,6 @@ class StreamwebSite:
                     f'{module.content_date.strftime("%Y.%m.%d")} - {link}',
                     unsafe_allow_html=True,
                 )
-
-        location.subheader("")
-        location.markdown(
-            f"[RSS]({self.rss_feed[content_name]}) | [Atom]({self.atom_feed[content_name]})"
-        )
 
     def render_content_by_click(
         self,

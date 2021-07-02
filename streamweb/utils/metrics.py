@@ -32,7 +32,8 @@ def log_runtime(fn):
         t2 = time.time()
         # time is logged in seconds
         perf_logger.info(
-            f"{fn.__module__}.{fn.__name__},{round(t2 - t1,4)}"
+            # f"{fn.__module__}.{fn.__name__},{round(t2 - t1,4)}"
+            f"{fn.__module__},{round(t2 - t1,4)}"
             f",{req.headers['User-Agent'].replace(',','')}"
             f",{req.headers['Origin'].replace(',','')}"
             f",{req.remote_ip.replace(',','')}"
