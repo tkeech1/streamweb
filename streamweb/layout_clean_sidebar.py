@@ -5,7 +5,7 @@ from utils.siteutils import StreamwebSite
 from utils.metrics import log_runtime
 
 # st.set_page_config(layout="wide")
-st.set_page_config(layout="wide")
+st.set_page_config(layout="centered")
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
