@@ -1,11 +1,13 @@
 import streamlit as st
 import datetime
+from datetime import date
 import pytz
 import pandas as pd
 import numpy as np
 import glob
 import timeit
 import jinja2
+from bokeh.models import Legend, HoverTool, ColumnDataSource
 from utils.metrics import log_runtime
 
 short_title = "Concatenating CSV Files"
@@ -90,8 +92,6 @@ def render(location: st):
 
     location.markdown("### Setup")
 
-    # col1, col2 = location.beta_columns((1, 1))
-
     location.markdown(
         "Let's begin by generating some test data. "
         "We'll generate files containing a timestamp column and a single column of randomly generated data. "
@@ -114,9 +114,9 @@ def render(location: st):
         """
 import pandas as pd
 import numpy as np
-import datetime
+from datetime import date
 
-row_date = datetime.date(2021, 1, 1)
+row_date = date.today()
 rows_per_file = 86_400
 files_to_generate = {{ files_to_generate }}
 
@@ -141,7 +141,7 @@ for i in range(files_to_generate):
         file_gen_bar.progress(0)
         gen_data_message.markdown("`Generating test data...`")
 
-        row_date = datetime.date(2021, 1, 1)
+        row_date = date.today()
         rows_per_file = 86_400
         files_to_generate = 3
 
@@ -208,8 +208,6 @@ def file_aggregation_pandas(source_files:str, aggregate_file:str) -> None:
         language="python",
     )
 
-    # pandas_append_run_col1, pandas_append_run_col2 = location.beta_columns((1, 1))
-
     location.markdown(
         "Here, we'll time how long it takes the `file_aggregation_pandas` function. "
         "In performance analysis, it's usually best to time the execution of multiple runs "
@@ -266,13 +264,11 @@ def file_aggregation_pandas(source_files:str, aggregate_file:str) -> None:
             if min(item) < append_min_time:
                 append_min_time = min(item) / n
 
-        location.markdown(
+        pandas_append_run_message.markdown(
             f"`Running... done. Minimum run time {round(append_min_time,4)} seconds. `"
         )
 
     location.markdown("---")
-
-    # pandas_concat_code_col1, pandas_concat_code_col2 = location.beta_columns((1, 1))
 
     location.markdown(
         "An alternative is to use Pandas' `concat()` method. The benefit"
@@ -294,13 +290,17 @@ def file_aggregation_pandas_concat(source_files:str, aggregate_file:str) -> None
     """
     )
 
-    # pandas_concat_run_col1, pandas_concat_run_col2 = location.beta_columns((1, 1))
+    location.code(
+        """
+    %timeit -r 2 -n 3 file_aggregation_pandas_concat('*.csv', 'aggregated_pandas.csv_')
+    """
+    )
 
     pandas_concat_run_message = location.empty()
     concat_bar = location.progress(0)
 
     if location.button("Run It!", key=2):
-        location.markdown(f"`Running... `")
+        pandas_concat_run_message.markdown(f"`Running... `")
         concat_bar.progress(0)
 
         r = 2
@@ -325,7 +325,7 @@ def file_aggregation_pandas_concat(source_files:str, aggregate_file:str) -> None
             if min(item) < append_min_time:
                 append_min_time = min(item) / n
 
-        location.markdown(
+        pandas_concat_run_message.markdown(
             f"`Running... done. Minimum run time {round(append_min_time,4)} seconds. `"
         )
 
@@ -333,12 +333,6 @@ def file_aggregation_pandas_concat(source_files:str, aggregate_file:str) -> None
         "Although both Pandas approaches have similar run times, there's a significant difference "
         "in memory utilization. If you're running on a machine that's memory-constrained, this "
         "this could make a huge difference in run time."
-    )
-
-    location.code(
-        """
-%timeit -r 2 -n 3 file_aggregation_pandas_concat('*.csv', 'aggregated_pandas.csv_')
-"""
     )
 
     location.markdown("---")
@@ -509,7 +503,7 @@ def file_aggregation_fileio(source_files:str, aggregate_file: str) -> None:
             if min(item) < append_min_time:
                 append_min_time = min(item) / n
 
-        location.markdown(
+        fileio_run_message.markdown(
             f"`Running... done. Minimum run time {round(append_min_time,4)} seconds. `"
         )
 
@@ -595,7 +589,7 @@ done >> aggregated_linux.csv_
             if min(item) < append_min_time:
                 append_min_time = min(item) / n
 
-        location.markdown(
+        linux_run_message.markdown(
             f"`Running... done. Minimum run time {round(append_min_time,4)} seconds. `"
         )
 
@@ -611,43 +605,138 @@ done >> aggregated_linux.csv_
         "Here's a summary of the results when running on my local machine. Your results may vary. "
     )
 
-    results_df = pd.DataFrame(
+    results_df2 = pd.DataFrame(
         {
-            "Files": [2, 5, 10],
-            "Pandas append": [0.338, 0.811, 1.624],
-            "Pandas concat()": [0.346, 0.896, 2.083],
-            "Python file operations": [0.023, 0.071, 0.213],
-            "Linux tools": [0.052, 0.055, 0.062],
+            "Type": [
+                "Pandas Append",
+                "Pandas Append",
+                "Pandas Append",
+                "Pandas Append",
+                "Pandas Concat",
+                "Pandas Concat",
+                "Pandas Concat",
+                "Pandas Concat",
+                "File IO",
+                "File IO",
+                "File IO",
+                "File IO",
+                "Linux Tools",
+                "Linux Tools",
+                "Linux Tools",
+                "Linux Tools",
+            ],
+            "Files": [2, 5, 10, 100, 2, 5, 10, 100, 2, 5, 10, 100, 2, 5, 10, 100],
+            "Runtime": [
+                0.338,
+                0.811,
+                1.624,
+                21.6,
+                0.346,
+                0.896,
+                2.083,
+                22.6,
+                0.023,
+                0.071,
+                0.213,
+                2.79,
+                0.052,
+                0.055,
+                0.062,
+                0.522,
+            ],
         }
     )
 
-    location.write(results_df)
+    # location.write(results_df2[results_df2['Type'] == 'pappend'])
 
     from bokeh.plotting import figure
 
-    # prepare some data
-    x = results_df["Files"]
-    y1 = results_df["Pandas append"]
-    y2 = results_df["Pandas concat()"]
-    y3 = results_df["Python file operations"]
-    y4 = results_df["Linux tools"]
+    hover = HoverTool(
+        tooltips=[
+            ("Method", "@Type"),
+            ("Number of Files", "@Files"),
+            ("Approximate Runtime", "@Runtime"),
+        ]
+    )
 
     # create a new plot with a title and axis labels
     p = figure(
         title="File Aggregation Run Times",
         x_axis_label="Number of Files",
         y_axis_label="Run Time",
+        toolbar_location=None,
+        tools=[hover],
     )
+
+    p.title.text_font_size = "14pt"
+    p.yaxis.axis_label_text_font_size = "12pt"
+    p.xaxis.axis_label_text_font_size = "12pt"
 
     # add multiple renderers
-    p.line(x, y1, legend_label="Pandas append", line_color="blue", line_width=2)
-    p.line(x, y2, legend_label="Pandas concat()", line_color="red", line_width=2)
     p.line(
-        x, y3, legend_label="Python file operations", line_color="purple", line_width=2
+        x="Files",
+        y="Runtime",
+        legend_label="Pandas Append",
+        line_color="blue",
+        line_width=2,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Append"]),
     )
-    p.line(x, y4, legend_label="Linux tools", line_color="green", line_width=2)
+    p.circle(
+        x="Files",
+        y="Runtime",
+        color="blue",
+        size=10,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Append"]),
+    )
+    p.line(
+        x="Files",
+        y="Runtime",
+        legend_label="Pandas Concat",
+        line_color="red",
+        line_width=2,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Concat"]),
+    )
+    p.circle(
+        x="Files",
+        y="Runtime",
+        color="red",
+        size=10,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Concat"]),
+    )
+    p.line(
+        x="Files",
+        y="Runtime",
+        legend_label="File IO",
+        line_color="orange",
+        line_width=2,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "File IO"]),
+    )
+    p.circle(
+        x="Files",
+        y="Runtime",
+        color="orange",
+        size=10,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "File IO"]),
+    )
+    p.line(
+        x="Files",
+        y="Runtime",
+        legend_label="Linux Tools",
+        line_color="green",
+        line_width=2,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "Linux Tools"]),
+    )
+    p.circle(
+        x="Files",
+        y="Runtime",
+        color="green",
+        size=10,
+        source=ColumnDataSource(results_df2[results_df2["Type"] == "Linux Tools"]),
+    )
 
-    location.bokeh_chart(p, use_container_width=False)
+    p.legend.location = "top_left"
+
+    location.bokeh_chart(p, use_container_width=True)
 
     location.markdown("### Conclusion")
 
