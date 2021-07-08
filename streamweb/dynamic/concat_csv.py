@@ -10,8 +10,8 @@ import jinja2
 from bokeh.models import Legend, HoverTool, ColumnDataSource
 from utils.metrics import log_runtime
 
-short_title = "Concatenating CSV Files"
-long_title = "Concatenating CSV Files"
+short_title = "Combining CSV Files"
+long_title = "Comparing Approaches for Combining CSV Files"
 key = 1
 content_date = datetime.datetime(2021, 4, 15).astimezone(pytz.timezone("US/Eastern"))
 output_dir = "./tmp/1/"
@@ -63,21 +63,15 @@ def render(location: st):
     location.write(content_date)
 
     location.markdown(
-        " File "
-        "concatenation is a common problem in time series data "
-        "where a process generates output files on a "
-        "periodic basis. To trend data over a larger time window, "
-        "you may need to combine data from multiple files "
-        "into a single file. "
+        "When working with time series data, combining multiple CSV files into a single file is often necessary "
+        "to trend data over a larger time window. "
         "There are a few options to consider when you need to "
         "combine many files into a single large file. "
-        "Depending on the number and size of the files, "
-        "performance might be a concern. "
     )
     location.markdown(
-        "In this post, we'll compare the performance of a few different approaches "
+        "In this post, I'll compare the performance of a few different approaches "
         "for concatenating CSV files. All of the examples can be copied to a "
-        "Jupyter notebook for testing. The examples are also available HERE. "
+        "Jupyter notebook for testing. "
     )
 
     location.markdown(

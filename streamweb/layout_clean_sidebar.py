@@ -30,7 +30,7 @@ def main(sws: StreamwebSite, content_id: str):
     @log_runtime
     def home(location: st, sws: StreamwebSite):
 
-        location.markdown("Hi. Thanks for visiting.")
+        location.markdown(sws.website_description)
 
         location.header("Posts")
 

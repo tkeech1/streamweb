@@ -15,7 +15,7 @@ def render(location: st):
     location.header(f"{long_title}")
     location.markdown(
         "I like to work on all types of applications, from web sites to computer vision. "
-        "I currently work at [PJM Interconnection](https://pjm.com/), making sure PJM's markets "
+        "I currently work at [PJM Interconnection](https://pjm.com/) making sure PJM's markets "
         "and settlements systems run smoothly. PJM operates wholesale energy markets and "
         "manages the high-voltage electrical system serving over 65 million people in the mid-Atlantic region. "
     )
@@ -24,5 +24,5 @@ def render(location: st):
     location.markdown(
         "This site is built on the awesome [Streamlit](https://streamlit.io/) app framework. "
         "I wrote [some code](https://github.com/tkeech1/streamweb) to use Streamlit "
-        "as a blogging web site. Feel free to try it out"
+        "as a web site. Feel free to try it out"
     )
