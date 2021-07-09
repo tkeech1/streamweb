@@ -57,7 +57,7 @@ def log_runtime(fn):
                 f",{str(req.request_time()).replace(',','')}"
             )
         except Exception as e:
-            logger.error("unable to log request {e}")
+            logger.error(f"unable to log request {e}")
         return result
 
     return measure_time
