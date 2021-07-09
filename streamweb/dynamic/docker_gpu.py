@@ -6,7 +6,7 @@ from utils.metrics import log_runtime
 short_title = "GPUs in VS Code Dev Containers"
 long_title = "Using GPUs in VS Code Dev Containers"
 key = 2
-content_date = datetime.datetime(2021, 7, 5).astimezone(pytz.timezone("US/Eastern"))
+content_date = datetime.datetime(2021, 7, 6).astimezone(pytz.timezone("US/Eastern"))
 output_dir = "./tmp/1/"
 
 

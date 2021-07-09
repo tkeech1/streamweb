@@ -30,7 +30,7 @@ def main(sws: StreamwebSite, content_id: str):
     @log_runtime
     def home(location: st, sws: StreamwebSite):
 
-        location.markdown(sws.website_description)
+        # location.markdown(sws.website_description)
 
         location.header("Posts")
 
@@ -40,8 +40,6 @@ def main(sws: StreamwebSite, content_id: str):
         location.markdown(
             f"[RSS]({sws.rss_feed['dynamic']}) | [Atom]({sws.atom_feed['dynamic']})"
         )
-
-    # main_col, _ = st.beta_columns([2, 1])
 
     # navigation logic - determines what to display in the main content area
     if home_button:

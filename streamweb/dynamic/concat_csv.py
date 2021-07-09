@@ -13,7 +13,7 @@ from utils.metrics import log_runtime
 short_title = "Combining CSV Files"
 long_title = "Comparing Approaches for Combining CSV Files"
 key = 1
-content_date = datetime.datetime(2021, 4, 15).astimezone(pytz.timezone("US/Eastern"))
+content_date = datetime.datetime(2021, 5, 15).astimezone(pytz.timezone("US/Eastern"))
 output_dir = "./tmp/1/"
 
 

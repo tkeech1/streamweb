@@ -82,7 +82,7 @@ class StreamwebSite:
     @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
     def load_modules(self, module_loader: ModuleLoader) -> List[ModuleType]:
 
-        logging.info(
+        logger.info(
             f"loading content modules in '{module_loader.package_name}' package "
         )
 

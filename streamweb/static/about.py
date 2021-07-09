@@ -24,5 +24,5 @@ def render(location: st):
     location.markdown(
         "This site is built on the awesome [Streamlit](https://streamlit.io/) app framework. "
         "I wrote [some code](https://github.com/tkeech1/streamweb) to use Streamlit "
-        "as a web site. Feel free to try it out"
+        "as a web site. Feel free to try it out."
     )
