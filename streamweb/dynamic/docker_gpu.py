@@ -63,7 +63,7 @@ def render(location: st):
     location.markdown(
         "NVIDIA provides a set of Docker images with GPU support. The command below executes `nvidia-smi`, "
         "an NVIDIA utility that allows you to query and manage GPU device state, inside a Docker container. "
-        "Note that I'm using the Ubuntu 20.04 image and there are other images available. "
+        "Note that I'm using the Ubuntu 20.04 image but there are other images available. "
     )
 
     location.code(
@@ -105,7 +105,7 @@ Wed Jul  7 00:34:05 2021
     location.markdown("### Create a VS Code Dev Container")
 
     location.markdown(
-        "Now that the host system is configured properly, you'll need to create a VS Code dev container. First, create a Dockerfile in the .devcontainer folder "
+        "Now that the host system has the necessary dependencies, you'll need to create a VS Code dev container. First, create a Dockerfile in the .devcontainer folder "
         "at the root of your VS Code project. The Dockerfile shown below contains the typical setup for mapping the container "
         "user to a local user so that files created inside the container have the appropriate ownership and permissions "
         "on the host system. "
@@ -137,7 +137,7 @@ RUN pip3 install --user torch jupyterlab fastai ipywidgets
 
     location.markdown(
         "`gpustat` is utility for monitoring GPU status and can be useful for monitoring the GPU during model training. "
-        "I also included jupyterlab, fastai and ipywidgets as part of the image. These packages allow you to run the examples in the [Practical Deep Learning for Coders](https://course.fast.ai/) book "
+        "I also included jupyterlab, fastai and ipywidgets as part of the image. These packages allow you to run the code in the [Practical Deep Learning for Coders](https://course.fast.ai/) book "
         "(you may need other dependencies but this should be enough to get started)."
     )
 

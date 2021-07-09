@@ -68,6 +68,7 @@ def render(location: st):
         "There are a few options to consider when you need to "
         "combine many files into a single large file. "
     )
+
     location.markdown(
         "In this post, I'll compare the performance of a few different approaches "
         "for concatenating CSV files. All of the examples can be copied to a "
