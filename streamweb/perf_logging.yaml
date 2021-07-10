@@ -10,7 +10,7 @@ handlers:
         class: logging.FileHandler
         level: INFO
         formatter: perf
-        filename: perf_metrics.log
+        filename: /home/python/streamweb-logs/perf_metrics.log
         encoding: utf8
 
 loggers:

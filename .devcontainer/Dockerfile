@@ -21,6 +21,8 @@ RUN pip3 install black flake8 mypy pytest
 
 USER $USERNAME
 
-RUN pip3 install --user streamlit feedgen pyyaml
+RUN mkdir /home/$USERNAME/streamweb-logs
+
+RUN pip3 install --user streamlit==0.80.0 bokeh==2.2 feedgen==0.9.0 pandas==1.2.3 numpy==1.20.1 pyyaml==5.4.1 --user
 
 ENV PATH="${PATH}:/home/${USERNAME}/.local/bin"

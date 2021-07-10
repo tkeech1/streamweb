@@ -14,7 +14,8 @@ short_title = "Combining CSV Files"
 long_title = "Comparing Approaches for Combining CSV Files"
 key = 1
 content_date = datetime.datetime(2021, 5, 15).astimezone(pytz.timezone("US/Eastern"))
-output_dir = "./tmp/1/"
+output_dir = "./tmp/"
+assets_dir = "./assets/"
 
 
 def file_aggregation_pandas(aggregated_file: str, num_files: int) -> None:
@@ -54,7 +55,7 @@ def file_aggregation_fileio(aggregated_file: str, num_files: int) -> None:
 def file_aggregation_linux() -> None:
     import subprocess
 
-    subprocess.call(f"{output_dir}linux_agg.sh")
+    subprocess.call(f"{assets_dir}linux_agg.sh")
 
 
 @log_runtime

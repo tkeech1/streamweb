@@ -145,7 +145,8 @@ class StreamwebSite:
         for c in self.content_modules[content_name][
             : min(number_items_to_display, len(self.content_modules[content_name]))
         ]:
-            button_click_flags.append(location.button(c.short_title, key=c.key))
+            # button_click_flags.append(location.button(c.short_title, key=c.key))
+            button_click_flags.append(location.button(c.short_title))
         return button_click_flags
 
     def create_link_list(
