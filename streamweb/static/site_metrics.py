@@ -16,7 +16,7 @@ DATE_COLUMN = "date/time"
 
 def load_data():
     data = pd.read_csv(
-        "perf_metrics.log",
+        "/home/python/streamweb-logs/perf_metrics.log",
         names=[
             "datetime",
             "ms",

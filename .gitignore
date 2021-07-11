@@ -3,5 +3,4 @@ __pycache__
 .mypy_cache
 .pytest_cache
 
-*tmp*
 *.log
