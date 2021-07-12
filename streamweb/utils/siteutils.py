@@ -222,11 +222,11 @@ class StreamwebSite:
 
         for c in self.content_modules[content_name]:
             fe = fg.add_entry()
-            fe.id(f"{self.website_url}/?content={str(c.key)}")
+            fe.id(f"{self.website_url}?content={str(c.key)}")
             fe.title(c.long_title)
             fe.published(c.content_date)
             fe.description(c.long_title)
-            fe.link(href=f"{self.website_url}/?content={str(c.key)}")
+            fe.link(href=f"{self.website_url}?content={str(c.key)}")
 
         return fg
 
