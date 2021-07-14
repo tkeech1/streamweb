@@ -14,11 +14,16 @@ def render(location: st):
 
     location.header(f"{long_title}")
     location.markdown(
-        "I like to work on all types of applications, from web sites to computer vision. "
-        "I currently work at [PJM Interconnection](https://pjm.com/) making sure PJM's markets "
-        "and settlements systems run smoothly. PJM operates wholesale energy markets and "
+        "I like to work on all types of applications from web sites to machine learning. "
+        "I currently work at [PJM Interconnection](https://pjm.com/) on PJM's markets "
+        "and settlements systems. PJM operates wholesale energy markets and "
         "manages the high-voltage electrical system serving over 65 million people in the mid-Atlantic region. "
     )
+
+    location.markdown("""
+* Github: [tkeech1](https://github.com/tkeech1)
+* LinkedIn: [toddkeech](https://www.linkedin.com/in/toddkeech/)"""
+    , unsafe_allow_html=True)
 
     location.header(f"About This Site")
     location.markdown(

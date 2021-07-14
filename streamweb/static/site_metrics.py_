@@ -20,16 +20,18 @@ def load_data():
         names=[
             "datetime",
             "ms",
-            "page",
+    location.markdown(
+        """
             "runtime",
-            "useragent",
-            "origin",
+* LinkedIn: [toddkeech](https://www.linkedin.com/in/toddkeech/)""",
+        unsafe_allow_html=True,
+    )
             "remoteip",
             "uri",
             "path",
             "query",
             "host",
-            "fullurl",
+++ /workspaces/streamweb/streamweb/static/site_metrics.py_.32f01b62641229603b1dad2ce26aa8fb.tmp	2021-07-13 10:17:53.045221 +0000
             "requesttime",
         ],
     )
@@ -39,7 +41,7 @@ def load_data():
 @log_runtime
 def render(location):
     location.header(f"{long_title}")
-    location.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
+    # location.markdown(content_date.strftime("%m/%d/%Y %H:%M:%S %Z"))
     data_load_state = location.text("Loading data...")
     data = load_data().drop("ms", axis=1)
     data_load_state.text("")

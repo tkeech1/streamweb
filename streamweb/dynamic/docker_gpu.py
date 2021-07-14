@@ -13,7 +13,7 @@ output_dir = "./tmp/1/"
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
-    location.write(content_date)
+    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
     location.markdown(
         "I recently started reading [Practical Deep Learning for Coders](https://course.fast.ai/) "

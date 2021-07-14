@@ -10,13 +10,13 @@ import tests.site_config as site_config
 
 @pytest.fixture
 def streamwebsite_dev():
-    yield StreamwebSite("test", "test", "test", {"name": "test"}, "test", "test", "")
+    yield StreamwebSite("id", "title", "desc", {"name": "name", "email": "example@example.com"}, "url", "lang", "dev")
     caching.clear_cache()
 
 
 @pytest.fixture
 def streamwebsite_prd():
-    yield StreamwebSite("test", "test", "test", {"name": "test"}, "test", "test", "prd")
+    yield StreamwebSite("id", "title", "desc", {"name": "name", "email": "example@example.com"}, "url", "lang", "prd")
     caching.clear_cache()
 
 
@@ -100,6 +100,6 @@ def test_create_feed_generator(sws_feedgen: StreamwebSite):
         reverse=False,
     )
     for fe, content_item in zip(fg.item(), content):
-        assert fe.id() == str(content_item.key)
+        assert fe.id() == f"{sws_feedgen.website_url}?content={str(content_item.key)}"
         assert fe.title() == content_item.long_title
         assert fe.pubDate() == content_item.content_date

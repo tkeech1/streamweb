@@ -24,15 +24,14 @@ def main(sws: StreamwebSite, content_id: str):
     st.sidebar.subheader("")
 
     st.sidebar.subheader("")
-    st.sidebar.subheader("Recent Posts")
+    st.sidebar.subheader("Recent")
     dynamic_content_button_click = sws.create_buttons("dynamic", st.sidebar, 3)
 
     @log_runtime
     def home(location: st, sws: StreamwebSite):
 
-        # location.markdown(sws.website_description)
-
-        location.header("Posts")
+        location.markdown("")
+        location.markdown("")
 
         sws.create_link_list(content_name="dynamic", location=location, search_text="")
 
