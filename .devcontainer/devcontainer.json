@@ -18,8 +18,8 @@
         // "-u", "vscode"
         "-u",
         "python",
-        "-p",
-        "8501:8501",
+        //"-p",
+        //"8501:8501",
     ],
     "appPort": [],
     // Use 'settings' to set *default* container specific settings.json values on container create. 

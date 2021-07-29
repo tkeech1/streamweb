@@ -7,7 +7,6 @@ short_title = "GPUs in VS Code Dev Containers"
 long_title = "Using GPUs in VS Code Dev Containers"
 key = 2
 content_date = datetime.datetime(2021, 7, 6).astimezone(pytz.timezone("US/Eastern"))
-output_dir = "./tmp/1/"
 
 
 @log_runtime
@@ -299,7 +298,7 @@ python@83279f51bc5c:/workspaces/gpu_docker$ gpustat
         "Thanks for reading. I hope this was helpful and  you're ready to start running code on the GPU. "
     )
 
-    location.markdown("### Helfpul Links")
+    location.markdown("### Resources")
 
     location.write(
         """
