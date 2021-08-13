@@ -5,4 +5,4 @@ __pycache__
 
 *.log
 
-/workspaces/streamweb/streamweb/assets/woodpecker_fastai.pkl
+streamweb/assets/woodpecker_fastai.pkl
