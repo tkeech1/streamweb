@@ -14,8 +14,8 @@ short_title = "Combining CSV Files"
 long_title = "Comparing Approaches for Combining CSV Files"
 key = 1
 content_date = datetime.datetime(2021, 5, 15).astimezone(pytz.timezone("US/Eastern"))
-output_dir = "./tmp/"
-assets_dir = "./assets/"
+assets_dir = "./assets/" + str(key) + '/'
+output_dir = "./assets/" + str(key) + '/tmp/'
 
 
 def file_aggregation_pandas(aggregated_file: str, num_files: int) -> None:
@@ -97,7 +97,7 @@ def render(location: st):
     )
 
     location.markdown(
-        "Since this is an interactive blog post, you can decide how many files you want to generate. "
+        "This post is interactive meaning you can decide how many files you want to generate. "
         "It's interesting (and sometimes surprising) to compare the run times for each file aggregation approach for  "
         "differing numbers of input files."
     )
@@ -133,7 +133,7 @@ for i in range(files_to_generate):
     gen_data_message = location.empty()
     file_gen_bar = location.progress(0)
 
-    if location.button("Generate Test Data"):
+    if location.button("Generate Test Data", key=293743):
         file_gen_bar.progress(0)
         gen_data_message.markdown("`Generating test data...`")
 
@@ -743,4 +743,15 @@ done >> aggregated_linux.csv_
         "lose the readability and maintainability that Python offers. "
         "As with all performance analysis, you need to test and profile on your specific "
         "dataset to determine which approach is right for you. "
+    )
+
+    location.markdown("### Resources")
+
+    location.write(
+        """
+    * [Pandas](https://pandas.pydata.org/)
+    * [Memory Profiler](https://pypi.org/project/memory-profiler/)
+    * [Timeit](https://docs.python.org/3/library/timeit.html)
+    * [iPython Magic Commands](https://ipython.readthedocs.io/en/stable/interactive/magics.html)
+"""
     )

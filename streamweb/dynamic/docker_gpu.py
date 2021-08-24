@@ -39,7 +39,7 @@ def render(location: st):
         "I use VS Code and I do most of my development using the [Remote Development extension](https://code.visualstudio.com/docs/remote/remote-overview) "
         "and [Docker development containers](https://code.visualstudio.com/docs/remote/create-dev-container). Dev containers allow me "
         "to install (and document in code) every dependency while keeping my base system neat and tidy. Unfortunately, using a GPU inside a Docker "
-        "container requires some minimal setup on the host system. "
+        "container requires some minimal setup on the host system. The Github repo for this post can be found [here](https://github.com/tkeech1/gpu_docker)."
     )
 
     location.markdown("### Configure the Host System")
