@@ -161,7 +161,8 @@ Under the hood, fastai performs a number of steps:
     " a simple way to get reasonable results quickly. fastai exposes additional functions such as `fit_one_cycle()`, `freeze()` and `unfreeze()` for customizing"
     " the model building process. Using `fine_tune()` I was able to get around 97% accuracy on the validation set using around 75 training images per class.")
 
-    location.markdown("Try making predictions on few samples by clicking the `Predict` button below")
+    # commenting this section out since ec2 instance doesn't have enough memory to run predictions
+    '''location.markdown("Try making predictions on few samples by clicking the `Predict` button below")
 
     c1, c2, c3, _ = location.beta_columns((1,1,1,1))
     img1 = assets_dir + 'pileated woodpecker/Image_1.jpg'
@@ -185,6 +186,8 @@ Under the hood, fastai performs a number of steps:
         #progress_bar = location.progress(0)
         location_img3.markdown(predict(img3))
         #progress_bar.progress(100)
+
+        '''
 
     location.markdown(
         "[Practical Deep Learning for Coders](https://course.fast.ai/) is a great introduction to neural "
