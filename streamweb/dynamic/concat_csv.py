@@ -162,7 +162,7 @@ for i in range(files_to_generate):
 
     location.markdown("### Pandas")
 
-    # pandas_append_code_col1, pandas_append_code_col2 = location.beta_columns((1, 1))
+    # pandas_append_code_col1, pandas_append_code_col2 = location.columns((1, 1))
 
     location.markdown(
         "We'll look at two different methods for aggregating CSV files using [Pandas](https://pandas.pydata.org/). "
@@ -335,7 +335,7 @@ def file_aggregation_pandas_concat(source_files:str, aggregate_file:str) -> None
 
     location.markdown("### Pandas Memory Usage")
 
-    # pandas_memory_code_col1, pandas_memory_code_col2 = location.beta_columns((1, 1))
+    # pandas_memory_code_col1, pandas_memory_code_col2 = location.columns((1, 1))
 
     location.markdown(
         "We can use the `memory-profiler` package to explore memory usage (`pip install memory-profiler`). "
@@ -368,7 +368,7 @@ def file_aggregation_pandas(source_files:str, aggregate_file:str) -> None:
     """
     )
 
-    # pandas_memory_run_col1, pandas_memory_run_col2 = location.beta_columns((1, 1))
+    # pandas_memory_run_col1, pandas_memory_run_col2 = location.columns((1, 1))
 
     location.markdown(
         "Once we've written the cell content to a file, we can load the module and then run `%mprun` as shown. "
@@ -431,7 +431,7 @@ Line #    Mem usage    Increment  Occurences   Line Contents
 
     location.markdown("### File IO")
 
-    # fileio_code_col1, fileio_code_col2 = location.beta_columns((1, 1))
+    # fileio_code_col1, fileio_code_col2 = location.columns((1, 1))
 
     location.markdown(
         "I like Pandas but it's not always necessary. To concatenate CSV files, we don't really need a DataFrame "
@@ -462,7 +462,7 @@ def file_aggregation_fileio(source_files:str, aggregate_file: str) -> None:
 """
     )
 
-    # fileio_run_col1, fileio_run_col2 = location.beta_columns((1, 1))
+    # fileio_run_col1, fileio_run_col2 = location.columns((1, 1))
 
     location.code(
         """
@@ -531,7 +531,7 @@ Line #    Mem usage    Increment  Occurences   Line Contents
 
     location.markdown("### Linux Tools")
 
-    # linux_code_col1, linux_code_col2 = location.beta_columns((1, 1))
+    # linux_code_col1, linux_code_col2 = location.columns((1, 1))
 
     location.markdown(
         "Another alternative is to use Linux OS tools to perform file concatenation. "
@@ -554,7 +554,7 @@ done >> aggregated_linux.csv_
 """
     )
 
-    # linux_run_col1, linux_run_col2 = location.beta_columns((1, 1))
+    # linux_run_col1, linux_run_col2 = location.columns((1, 1))
 
     linux_run_message = location.empty()
     linux_bar = location.progress(0)

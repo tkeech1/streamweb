@@ -23,6 +23,4 @@ USER $USERNAME
 
 RUN mkdir /home/$USERNAME/streamweb-logs
 
-RUN pip3 install -r requirements.txt --user
-
 ENV PATH="${PATH}:/home/${USERNAME}/.local/bin"

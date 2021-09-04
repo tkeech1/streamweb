@@ -55,7 +55,7 @@ downloader.download("red bellied woodpecker", limit=150,  output_dir='images', a
 """
     )
 
-    c1, c2 = location.beta_columns(2)
+    c1, c2 = location.columns(2)
     c1.image(assets_dir + 'pileated woodpecker/Image_145.jpg', width=200)
     c1.markdown("**Pileated Woodpecker**")
     c2.image(assets_dir + 'red bellied woodpecker/Image_143.jpg', width=200)
@@ -159,7 +159,7 @@ Under the hood, fastai performs a number of steps:
     # commenting this section out since ec2 instance doesn't have enough memory to run predictions
     '''location.markdown("Try making predictions on few samples by clicking the `Predict` button below")
 
-    c1, c2, c3, _ = location.beta_columns((1,1,1,1))
+    c1, c2, c3, _ = location.columns((1,1,1,1))
     img1 = assets_dir + 'pileated woodpecker/Image_1.jpg'
     c1.image(img1, width=224)
     location_img1 = c1.empty()

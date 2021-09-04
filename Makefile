@@ -1,3 +1,6 @@
+install-deps:
+	python -m pip install -r requirements.txt
+	
 run-streamlit-prd:
 	cd streamweb/ && streamlit run layout_clean_sidebar.py -- prd
 
