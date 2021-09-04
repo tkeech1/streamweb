@@ -2,7 +2,7 @@ import streamlit as st
 import datetime
 import pytz
 from utils.metrics import log_runtime
-from fastai.vision.all import load_learner
+#from fastai.vision.all import load_learner
 
 short_title = "fastai Image Classification"
 long_title = "Image Classification with fastai and PyTorch"
@@ -11,15 +11,10 @@ content_date = datetime.datetime(2021, 8, 19).astimezone(pytz.timezone("US/Easte
 assets_dir = "./assets/" + str(key) + '/'
 
 #@st.cache
-def predict(image: str)-> str:
+'''def predict(image: str)-> str:
     learn_inf = load_learner(assets_dir + 'woodpecker_fastai.pkl')
 
-    '''location.image(assets_dir + 'pileated woodpecker/Image_1.jpg', width=100)
-    location.write(learn_inf.predict(assets_dir + 'pileated woodpecker/Image_1.jpg')[0])
-
-    location.image(assets_dir + 'red bellied woodpecker/Image_1.jpg', width=100)
-    location.write(learn_inf.predict(assets_dir + 'red bellied woodpecker/Image_1.jpg')[0])'''
-    return learn_inf.predict(image)[0]
+    return learn_inf.predict(image)[0]'''
 
 @log_runtime
 def render(location: st):
