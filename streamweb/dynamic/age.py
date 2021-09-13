@@ -3,9 +3,12 @@ import datetime
 import pytz
 from datetime import date
 from utils.metrics import log_runtime
+import matplotlib.pyplot as plt
+import pandas as pd
+from io import BytesIO
 
-short_title = "What's my age?"
-long_title = "What's My Age On Each Planet (assuming you were born on Earth)?"
+short_title = "What's My Age?"
+long_title = "What's My Age On Each Planet?"
 key = 4
 content_date = datetime.datetime(2021, 9, 5).astimezone(pytz.timezone("US/Eastern"))
 assets_dir = "./assets/" + str(key) + '/'
@@ -14,6 +17,8 @@ assets_dir = "./assets/" + str(key) + '/'
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
     location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+
+    location.write(f"Just a fun coding thing to do with my son. ")    
 
     today = datetime.date.today()
     birth_date = location.date_input('What\'s your birth date?', datetime.date(2000,1,1), datetime.date(1900,1,1), today)
@@ -71,11 +76,33 @@ def render(location: st):
     }
 
     earth_days_alive = (today - birth_date).days
-        
-    for k in places.keys():
-        place_years = round(earth_days_alive  / places[k]['year_length_earth_days'], 2)
-        place_days = round(place_years * places[k]['year_length_earth_days'] * 24 / places[k]['day_length_earth_hours'], 2)
-        location.write(f"You're {place_years} {places[k]['planet_name']} years old ({place_days} days on {k}).")    
+    df = pd.DataFrame()
+    df['Planet'] = places.keys()    
+
+    df['Age_in_Years'] = df['Planet'].apply(lambda x: round(earth_days_alive  / places[x]['year_length_earth_days'], 2))
+    df['Age_in_Days'] = df.apply(lambda x: round(x['Age_in_Years'] * places[x['Planet']]['year_length_earth_days'] * 24 / places[x['Planet']]['day_length_earth_hours'], 2), axis=1)
+
+    #location.write(df)
+
+    #for k in places.keys():
+    #    place_years = round(earth_days_alive  / places[k]['year_length_earth_days'], 2)
+    #    place_days = round(place_years * places[k]['year_length_earth_days'] * 24 / places[k]['day_length_earth_hours'], 2)
+    #    location.write(f"You're {place_years} {places[k]['planet_name']} years old ({place_days} days on {k}).")    
+
+    plt.style.use('seaborn')
+    fig, ax = plt.subplots(figsize=(8,5))
+    fig.suptitle('Age On Each Planet', fontsize=14)
+    plt.xlabel('Planet', fontsize=10)
+    plt.ylabel('Age In Years', fontsize=10)
+    ax.bar(df['Planet'], df['Age_in_Years'])
+    for i, v in enumerate(df['Age_in_Years']):
+        ax.text(i, v, str(v), color='black')
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    location.image(buf)
+
+    #location.write(fig)
     
 
 
