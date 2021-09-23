@@ -3,9 +3,10 @@ import datetime
 import pytz
 from datetime import date
 from utils.metrics import log_runtime
+import pandas as pd
 
-short_title = "Pandas: iterrows and itertuples"
-long_title = "Pandas: iterrows and itertuples"
+short_title = "iterrows() and itertuples()"
+long_title = "iterrows() and itertuples()"
 key = 5
 content_date = datetime.datetime(2021, 10, 5).astimezone(pytz.timezone("US/Eastern"))
 assets_dir = "./assets/" + str(key) + '/'
@@ -14,4 +15,99 @@ assets_dir = "./assets/" + str(key) + '/'
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
     location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+
+    location.write(f"Pandas `iterrows()` and `itertuples()` provide two different ways to `iter`ate over rows in a DataFrame.")
+
+    location.write(f"### iterrows()")
+
+    location.write(f"`iterrows()` returns a Pandas `Series`. If you're working with a data set that contains columns with different data "
+    "types, `iterrows()` might not be what you want since it doesn't preserve data types of each column. Here's an example based on the "
+    "Pandas documentation."
+    )
+
+    # this works
+    # ser = pd.Series([1,2, 3.0])
+    # location.write(ser)
+    # ser = pd.Series(['1','2','3.0'])
+    # location.write(ser)
+    # this fails - seems like a streamlit bug
+    # ser = pd.Series(['1', 2, 3])
+    # location.write(ser)
+    # this also fails
+    # ser = pd.Series([1, '2', 3])
+    # location.write(ser)
+
+    df = pd.DataFrame([[1, 2.0, 3]], columns=['int', 'float', 'cat'])
+    df['cat'] = df['cat'].astype('category')
     
+    location.code(
+        """
+df = pd.DataFrame([[1, 2.0, 3]], columns=['int', 'float', 'cat']) # Create a dataframe with several different data types
+df['cat'] = df['cat'].astype('category') # make 'cat' a categorical type
+        """
+    )  
+    location.write(df)
+
+    location.write("You might expect to get back a `Series` containing an `int`, `float` and `category`. But, in this case, `iterrows()` returns a `Series` of `float64`.")
+    location.code(
+        """
+_, row = next(df.iterrows())
+row
+        """
+    )  
+    i, row = next(df.iterrows())
+    location.write(row)
+    location.code(
+        """
+row['cat'].dtype
+        """
+    )  
+    location.write(row['cat'].dtype)        
+    location.code(
+        """
+df['cat'].dtype
+        """
+    )  
+    location.write(df['cat'].dtype)
+
+    location.write(f"### itertuples()")
+
+    location.write(f"`itertuples()` returns a `NamedTuple`."
+    )
+
+    df = pd.DataFrame([[1, 2.0, 3 ,'str', '2021-01-01']], columns=['int', 'float', 'cat', 'str', 'date'])
+    df['cat'] = df['cat'].astype('category')
+    df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+    
+    location.code(
+        """
+df = pd.DataFrame([[1, 2.0, 3 ,'str']], columns=['int', 'float', 'cat', 'str'])
+df['cat'] = df['cat'].astype('category')        """
+    )  
+    location.write(df)
+
+    location.code(
+        """
+_, row = next(df.itertuples())
+row
+        """
+    )  
+    row = next(df.itertuples())
+    location.write(row)
+    location.code(
+        """
+type(row.cat)
+        """
+    )  
+    location.write(type(row.date))     
+    location.write('Works as expected')
+
+    location.write(type(row.cat))   
+    location.write('Wait... what?!')
+
+    location.code(
+        """
+df['cat'].dtype
+        """
+    )  
+    location.write(df['cat'].dtype)
