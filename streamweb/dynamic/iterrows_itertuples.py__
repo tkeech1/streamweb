@@ -4,6 +4,7 @@ import pytz
 from datetime import date
 from utils.metrics import log_runtime
 import pandas as pd
+import timeit
 
 short_title = "iterrows() and itertuples()"
 long_title = "iterrows() and itertuples()"
@@ -63,12 +64,6 @@ row['cat'].dtype
         """
     )  
     location.write(row['cat'].dtype)        
-    location.code(
-        """
-df['cat'].dtype
-        """
-    )  
-    location.write(df['cat'].dtype)
 
     location.write(f"### itertuples()")
 
@@ -93,21 +88,66 @@ row
         """
     )  
     row = next(df.itertuples())
-    location.write(row)
+    #location.write(row)
+    location.code(
+        """
+type(row.date)
+        """
+    )  
+    location.write(type(row.date))     
+    location.write('Returning the date from the tuple works as expected. But returning the category...')
+
     location.code(
         """
 type(row.cat)
         """
     )  
-    location.write(type(row.date))     
-    location.write('Works as expected')
-
     location.write(type(row.cat))   
-    location.write('Wait... what?!')
+    #location.write('Wait... what?!')
 
-    location.code(
-        """
-df['cat'].dtype
-        """
-    )  
-    location.write(df['cat'].dtype)
+    location.markdown("### Performance")
+
+    df = pd.DataFrame([i for i in range(1000)])
+
+    #location.write(df)
+    s = 0
+
+    x = timeit.repeat(
+            stmt='for i in df.iterrows(): pass',
+            repeat=1,
+            number=1,
+            globals=dict(globals(), **locals()),
+        )
+
+    location.write(x)
+
+    x = timeit.repeat(
+            stmt='for i in df.itertuples(): pass',
+            repeat=1,
+            number=1,
+            globals=dict(globals(), **locals()),
+        )
+
+    location.write(x)
+
+    x = timeit.repeat(
+            stmt='df.sum()',
+            repeat=1,
+            number=1,
+            globals=dict(globals(), **locals()),
+        )
+
+    location.write(x)
+
+    x = timeit.repeat(
+            stmt='df.apply(lambda row: 1==1, axis=1)',
+            repeat=1,
+            number=1,
+            globals=dict(globals(), **locals()),
+        )
+
+    location.write(x)
+
+
+
+
