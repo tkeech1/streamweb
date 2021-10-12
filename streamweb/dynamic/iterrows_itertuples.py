@@ -8,7 +8,7 @@ import timeit
 
 short_title = "iterrows() and itertuples()"
 long_title = "iterrows() and itertuples()"
-key = 5
+key = 6
 content_date = datetime.datetime(2021, 10, 5).astimezone(pytz.timezone("US/Eastern"))
 assets_dir = "./assets/" + str(key) + '/'
 
