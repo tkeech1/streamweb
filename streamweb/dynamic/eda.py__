@@ -1,0 +1,65 @@
+import streamlit as st
+import datetime
+import pytz
+from datetime import date
+from utils.metrics import log_runtime
+import pandas as pd
+import timeit
+
+short_title = "Exploratory Data Analysis"
+long_title = "A ToDo List for Exploratory Data Analysis"
+key = 10
+content_date = datetime.datetime(2021, 11, 10).astimezone(pytz.timezone("US/Eastern"))
+assets_dir = "./assets/" + str(key) + '/'
+
+@log_runtime
+def render(location: st):
+    location.markdown(f"## [{long_title}](/?content={key})")
+    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    
+    location.markdown("### Transforming Raw Data Into a Useable Form")
+    
+    location.markdown("### Columns and Data Types")
+
+    location.markdown("### Univariate Analysis")
+
+    location.markdown("#### Missing Data")
+
+    location.markdown("#### Outliers")  
+
+    location.markdown("#### Box Plots")
+
+    location.markdown("#### Summary Statistics")        
+
+    location.markdown("#### Frequency Distribution")    
+
+    location.markdown("#### Histograms")    
+
+    location.markdown("### Bivariate Analysis")
+    
+    location.markdown("#### Correlation")
+
+    location.markdown("#### Scatter Plots and Pair Plots")
+
+    location.markdown("#### Pivot Tables")
+
+    location.markdown("### Feature Selection and Engineering")
+
+    location.markdown("### Additional Analysis")
+
+    location.markdown("### Resources")
+
+    location.write(
+        """
+    * [](https://www.youtube.com/watch?v=kLDTbavcmd0)
+    * [](https://willkoehrsen.github.io/machine%20learning/data%20science%20for%20good/project/a-data-science-for-good-machine-learning-project-walk-through-in-python-part-one/)
+    * [](https://towardsai.net/p/data-analysis/exploratory-data-analysis-in-python-ebdf643a33f6)
+    * [](https://shopify.engineering/conducting-exploratory-data-analysis)
+
+    
+"""
+    )
+
+
+
+

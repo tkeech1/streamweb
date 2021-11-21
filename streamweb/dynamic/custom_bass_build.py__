@@ -1,0 +1,35 @@
+import streamlit as st
+import datetime
+import pytz
+from datetime import date
+from utils.metrics import log_runtime
+import pandas as pd
+import timeit
+
+short_title = "Custom Bass Build"
+long_title = "My First Kit Guitar Build"
+key = 11
+content_date = datetime.datetime(2021, 11, 10).astimezone(pytz.timezone("US/Eastern"))
+assets_dir = "./assets/" + str(key) + '/'
+
+@log_runtime
+def render(location: st):
+    location.markdown(f"## [{long_title}](/?content={key})")
+    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    
+    location.latex(r'''\vec{x} ''')
+
+    location.markdown("### Resources")
+
+    location.write(
+        """
+    * [](https://www.youtube.com/watch?v=kLDTbavcmd0)
+    * [](https://willkoehrsen.github.io/machine%20learning/data%20science%20for%20good/project/a-data-science-for-good-machine-learning-project-walk-through-in-python-part-one/)
+    * [](https://www.kaggle.com/willkoehrsen/a-complete-introduction-and-walkthrough)
+    
+"""
+    )
+
+
+
+

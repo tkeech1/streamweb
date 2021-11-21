@@ -9,13 +9,17 @@ import timeit
 short_title = "Streamlit State"
 long_title = "Streamlit State"
 key = 7
-content_date = datetime.datetime(2021, 10, 31).astimezone(pytz.timezone("US/Eastern"))
+content_date = datetime.datetime(2021, 11, 20).astimezone(pytz.timezone("US/Eastern"))
 assets_dir = "./assets/" + str(key) + '/'
 
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
     location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+
+    if "mytextbox" not in location.session_state:
+        location.session_state["mytextbox"] = 'default'
+    location.text_input(label="My Text Box", key='mytextbox')
 
     
     location.markdown("### Resources")
