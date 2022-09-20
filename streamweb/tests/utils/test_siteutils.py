@@ -2,7 +2,7 @@
 
 import importlib
 from utils.siteutils import StreamwebSite
-from streamlit import caching
+#from streamlit import caching
 import streamlit as st
 import pytest
 import tests.site_config as site_config
@@ -11,13 +11,13 @@ import tests.site_config as site_config
 @pytest.fixture
 def streamwebsite_dev():
     yield StreamwebSite("id", "title", "desc", {"name": "name", "email": "example@example.com"}, "url", "lang", "dev")
-    caching.clear_cache()
+    #caching.clear_cache()
 
 
 @pytest.fixture
 def streamwebsite_prd():
     yield StreamwebSite("id", "title", "desc", {"name": "name", "email": "example@example.com"}, "url", "lang", "prd")
-    caching.clear_cache()
+    #caching.clear_cache()
 
 
 @pytest.fixture
@@ -31,7 +31,7 @@ def sws_feedgen():
         "test",
         "prd",
     )
-    caching.clear_cache()
+    #caching.clear_cache()
 
 
 def test_load_content_dev(streamwebsite_dev: StreamwebSite):

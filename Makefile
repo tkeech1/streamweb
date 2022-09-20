@@ -1,5 +1,5 @@
 install-deps:
-	python -m pip install -r requirements.txt
+	python3 -m pip install -r requirements.txt
 	
 run-streamlit-prd:
 	cd streamweb/ && streamlit run layout_clean_sidebar.py -- prd
@@ -11,4 +11,4 @@ run-streamlit-nosb:
 	cd streamweb/ && streamlit run layout_clean_no_sidebar.py
 
 test:
-	cd streamweb/ && python -m pytest -s
+	cd streamweb/ && python3 -m pytest -s

@@ -1,4 +1,4 @@
-FROM python:3.9-buster
+FROM python:3.10-buster
 
 ARG USERNAME=python
 # On Linux, replace with your actual UID, GID if not the default 1000

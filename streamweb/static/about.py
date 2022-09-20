@@ -15,9 +15,7 @@ def render(location: st):
     location.header(f"{long_title}")
     location.markdown(
         "I like to work on all types of applications from web sites to machine learning. "
-        "I currently work at [PJM Interconnection](https://pjm.com/) on markets "
-        "and settlements systems. PJM operates wholesale energy markets and "
-        "manages the high-voltage electrical system serving over 65 million people in the mid-Atlantic region. "
+        "I currently work at [PJM Interconnection](https://pjm.com/) on systems that support dispatch and operations."
     )
 
     location.markdown("""

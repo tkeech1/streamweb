@@ -3,7 +3,7 @@ import streamlit as st
 import time
 import logging
 import logging.config
-from streamlit.server.server import Server
+from streamlit.web.server import Server
 from tornado.httputil import HTTPServerRequest
 import yaml
 
@@ -25,9 +25,12 @@ def get_perf_logger():
 
 def get_request() -> HTTPServerRequest:
     try:
-        return list(Server.get_current()._session_info_by_id.values())[0].ws.request
+        return HTTPServerRequest()
+        # TODO - need to fix - Streamlit 1.12 doesn't support get_current() any longer
+        #return list(Server.get_current()._session_info_by_id.values())[0].ws.request
     except Exception as e:
         logger.error(f"unable to get request {e}")
+        return HTTPServerRequest()
 
 
 def log_runtime(fn):

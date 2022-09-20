@@ -595,144 +595,144 @@ done >> aggregated_linux.csv_
         "to perform much better than the Python file operations for more than a handful of files. "
     )
 
-    location.markdown("### Unscientific Results")
+    #location.markdown("### Unscientific Results")
 
-    location.markdown(
-        "Here's a summary of the results when running on my local machine. Your results may vary. "
-    )
+    #location.markdown(
+    #    "Here's a summary of the results when running on my local machine. Your results may vary. "
+    #)
 
-    results_df2 = pd.DataFrame(
-        {
-            "Type": [
-                "Pandas Append",
-                "Pandas Append",
-                "Pandas Append",
-                "Pandas Append",
-                "Pandas Concat",
-                "Pandas Concat",
-                "Pandas Concat",
-                "Pandas Concat",
-                "File IO",
-                "File IO",
-                "File IO",
-                "File IO",
-                "Linux Tools",
-                "Linux Tools",
-                "Linux Tools",
-                "Linux Tools",
-            ],
-            "Files": [2, 5, 10, 100, 2, 5, 10, 100, 2, 5, 10, 100, 2, 5, 10, 100],
-            "Runtime": [
-                0.338,
-                0.811,
-                1.624,
-                21.6,
-                0.346,
-                0.896,
-                2.083,
-                22.6,
-                0.023,
-                0.071,
-                0.213,
-                2.79,
-                0.052,
-                0.055,
-                0.062,
-                0.522,
-            ],
-        }
-    )
+    # results_df2 = pd.DataFrame(
+    #     {
+    #         "Type": [
+    #             "Pandas Append",
+    #             "Pandas Append",
+    #             "Pandas Append",
+    #             "Pandas Append",
+    #             "Pandas Concat",
+    #             "Pandas Concat",
+    #             "Pandas Concat",
+    #             "Pandas Concat",
+    #             "File IO",
+    #             "File IO",
+    #             "File IO",
+    #             "File IO",
+    #             "Linux Tools",
+    #             "Linux Tools",
+    #             "Linux Tools",
+    #             "Linux Tools",
+    #         ],
+    #         "Files": [2, 5, 10, 100, 2, 5, 10, 100, 2, 5, 10, 100, 2, 5, 10, 100],
+    #         "Runtime": [
+    #             0.338,
+    #             0.811,
+    #             1.624,
+    #             21.6,
+    #             0.346,
+    #             0.896,
+    #             2.083,
+    #             22.6,
+    #             0.023,
+    #             0.071,
+    #             0.213,
+    #             2.79,
+    #             0.052,
+    #             0.055,
+    #             0.062,
+    #             0.522,
+    #         ],
+    #     }
+    # )
 
-    # location.write(results_df2[results_df2['Type'] == 'pappend'])
+    # # location.write(results_df2[results_df2['Type'] == 'pappend'])
 
-    from bokeh.plotting import figure
+    # from bokeh.plotting import figure
 
-    hover = HoverTool(
-        tooltips=[
-            ("Method", "@Type"),
-            ("Number of Files", "@Files"),
-            ("Approximate Runtime", "@Runtime"),
-        ]
-    )
+    # hover = HoverTool(
+    #     tooltips=[
+    #         ("Method", "@Type"),
+    #         ("Number of Files", "@Files"),
+    #         ("Approximate Runtime", "@Runtime"),
+    #     ]
+    # )
 
-    # create a new plot with a title and axis labels
-    p = figure(
-        title="File Aggregation Run Times",
-        x_axis_label="Number of Files",
-        y_axis_label="Run Time",
-        toolbar_location=None,
-        tools=[hover],
-    )
+    # # create a new plot with a title and axis labels
+    # p = figure(
+    #     title="File Aggregation Run Times",
+    #     x_axis_label="Number of Files",
+    #     y_axis_label="Run Time",
+    #     toolbar_location=None,
+    #     tools=[hover],
+    # )
 
-    p.title.text_font_size = "14pt"
-    p.yaxis.axis_label_text_font_size = "12pt"
-    p.xaxis.axis_label_text_font_size = "12pt"
+    # p.title.text_font_size = "14pt"
+    # p.yaxis.axis_label_text_font_size = "12pt"
+    # p.xaxis.axis_label_text_font_size = "12pt"
 
-    # add multiple renderers
-    p.line(
-        x="Files",
-        y="Runtime",
-        legend_label="Pandas Append",
-        line_color="blue",
-        line_width=2,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Append"]),
-    )
-    p.circle(
-        x="Files",
-        y="Runtime",
-        color="blue",
-        size=10,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Append"]),
-    )
-    p.line(
-        x="Files",
-        y="Runtime",
-        legend_label="Pandas Concat",
-        line_color="red",
-        line_width=2,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Concat"]),
-    )
-    p.circle(
-        x="Files",
-        y="Runtime",
-        color="red",
-        size=10,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Concat"]),
-    )
-    p.line(
-        x="Files",
-        y="Runtime",
-        legend_label="File IO",
-        line_color="orange",
-        line_width=2,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "File IO"]),
-    )
-    p.circle(
-        x="Files",
-        y="Runtime",
-        color="orange",
-        size=10,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "File IO"]),
-    )
-    p.line(
-        x="Files",
-        y="Runtime",
-        legend_label="Linux Tools",
-        line_color="green",
-        line_width=2,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "Linux Tools"]),
-    )
-    p.circle(
-        x="Files",
-        y="Runtime",
-        color="green",
-        size=10,
-        source=ColumnDataSource(results_df2[results_df2["Type"] == "Linux Tools"]),
-    )
+    # # add multiple renderers
+    # p.line(
+    #     x="Files",
+    #     y="Runtime",
+    #     legend_label="Pandas Append",
+    #     line_color="blue",
+    #     line_width=2,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Append"]),
+    # )
+    # p.circle(
+    #     x="Files",
+    #     y="Runtime",
+    #     color="blue",
+    #     size=10,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Append"]),
+    # )
+    # p.line(
+    #     x="Files",
+    #     y="Runtime",
+    #     legend_label="Pandas Concat",
+    #     line_color="red",
+    #     line_width=2,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Concat"]),
+    # )
+    # p.circle(
+    #     x="Files",
+    #     y="Runtime",
+    #     color="red",
+    #     size=10,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "Pandas Concat"]),
+    # )
+    # p.line(
+    #     x="Files",
+    #     y="Runtime",
+    #     legend_label="File IO",
+    #     line_color="orange",
+    #     line_width=2,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "File IO"]),
+    # )
+    # p.circle(
+    #     x="Files",
+    #     y="Runtime",
+    #     color="orange",
+    #     size=10,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "File IO"]),
+    # )
+    # p.line(
+    #     x="Files",
+    #     y="Runtime",
+    #     legend_label="Linux Tools",
+    #     line_color="green",
+    #     line_width=2,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "Linux Tools"]),
+    # )
+    # p.circle(
+    #     x="Files",
+    #     y="Runtime",
+    #     color="green",
+    #     size=10,
+    #     source=ColumnDataSource(results_df2[results_df2["Type"] == "Linux Tools"]),
+    # )
 
-    p.legend.location = "top_left"
+    # p.legend.location = "top_left"
 
-    location.bokeh_chart(p, use_container_width=True)
+    # location.bokeh_chart(p, use_container_width=True)
 
     location.markdown("### Conclusion")
 
