@@ -12,7 +12,7 @@ content_date = datetime.datetime(2021, 7, 6).astimezone(pytz.timezone("US/Easter
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
-    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    #location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
     location.markdown(
         "I recently started reading [Practical Deep Learning for Coders](https://course.fast.ai/) "

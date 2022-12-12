@@ -24,7 +24,7 @@ def main(sws: StreamwebSite, content_id: str):
     st.sidebar.subheader("")
 
     st.sidebar.subheader("")
-    st.sidebar.subheader("Recent")
+    st.sidebar.subheader("Latest")
     dynamic_content_button_click = sws.create_buttons("dynamic", st.sidebar, 3)
 
     @log_runtime

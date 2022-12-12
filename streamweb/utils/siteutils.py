@@ -167,7 +167,8 @@ class StreamwebSite:
                     f"{module.long_title}</a>"
                 )
                 location.markdown(
-                    f'{module.content_date.strftime("%Y.%m.%d")} - {link}',
+                    f'{link}',
+                    #f'{module.content_date.strftime("%Y.%m.%d")} - {link}',
                     unsafe_allow_html=True,
                 )
 
@@ -224,7 +225,7 @@ class StreamwebSite:
             fe = fg.add_entry()
             fe.id(f"{self.website_url}?content={str(c.key)}")
             fe.title(c.long_title)
-            fe.published(c.content_date)
+            #fe.published(c.content_date)
             fe.description(c.long_title)
             fe.link(href=f"{self.website_url}?content={str(c.key)}")
 

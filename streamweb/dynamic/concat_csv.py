@@ -61,7 +61,7 @@ def file_aggregation_linux() -> None:
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
-    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    #location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
     location.markdown(
         "When working with time series data, combining multiple CSV files into a single file is often necessary "
@@ -595,6 +595,7 @@ done >> aggregated_linux.csv_
         "to perform much better than the Python file operations for more than a handful of files. "
     )
 
+    # TODO - fix
     #location.markdown("### Unscientific Results")
 
     #location.markdown(

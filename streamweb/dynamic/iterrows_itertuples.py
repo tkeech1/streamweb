@@ -15,7 +15,7 @@ assets_dir = "./assets/" + str(key) + '/'
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
-    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    #location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
     location.write(f"Pandas `iterrows()` and `itertuples()` provide two different ways to `iter`ate over rows in a DataFrame. "
     "If you're working with a data set that contains columns with different data "

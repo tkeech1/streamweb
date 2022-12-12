@@ -1,4 +1,4 @@
-streamlit>=1.0.0 
+streamlit>=1.15.2
 # pinned at 2.2 due to incompatibility issue - used in content=1
 bokeh>=2.2 
 feedgen>=0.9.0 

@@ -19,7 +19,7 @@ assets_dir = "./assets/" + str(key) + '/'
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
-    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    #location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
     location.markdown(
         "Fastai makes transfer learning easy. The main idea behind transfer learning is to use a pre-trained model to "        

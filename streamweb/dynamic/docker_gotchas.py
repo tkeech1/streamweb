@@ -13,7 +13,7 @@ assets_dir = "./assets/" + str(key) + '/'
 @log_runtime
 def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
-    location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
+    #location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
     location.markdown("### Upgrading Packages That Prompt For Installation Options")
 
