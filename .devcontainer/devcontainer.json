@@ -17,7 +17,7 @@
         // for the needed Dockerfile updates and then uncomment the next line.
         // "-u", "vscode"
         "-u",
-        "python",
+        "python"
         //"-p",
         //"8501:8501",
     ],

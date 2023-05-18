@@ -509,7 +509,7 @@ def file_aggregation_fileio(source_files:str, aggregate_file: str) -> None:
     )
 
     location.markdown(
-        "When run on 100 files, memory usage is also far less that the Pandas versions."
+        "When run on 100 files, memory usage is also far less than the Pandas versions."
     )
 
     location.code(
