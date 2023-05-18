@@ -20,19 +20,8 @@ def load_data():
         names=[
             "datetime",
             "ms",
-    location.markdown(
-        """
+            "page",
             "runtime",
-* LinkedIn: [toddkeech](https://www.linkedin.com/in/toddkeech/)""",
-        unsafe_allow_html=True,
-    )
-            "remoteip",
-            "uri",
-            "path",
-            "query",
-            "host",
-++ /workspaces/streamweb/streamweb/static/site_metrics.py_.32f01b62641229603b1dad2ce26aa8fb.tmp	2021-07-13 10:17:53.045221 +0000
-            "requesttime",
         ],
     )
     return data
@@ -91,7 +80,7 @@ def render(location):
                 data["page"]
                 .value_counts()
                 .reset_index()
-                .rename(columns={"index": "Page", "page": "Hits"})
+                .rename(columns={"count": "Hits", "page": "Page"})
             )
             .mark_bar(tooltip=True)
             .encode(
@@ -111,8 +100,6 @@ def render(location):
     location.write(chart)
 
     st.markdown("""---""")
-
-    group_by_page = data.groupby(["page"])
 
     selection = alt.selection_single(fields=["Page"], bind="legend")
     chart = (
@@ -158,15 +145,14 @@ def render(location):
     chart = (
         (
             alt.Chart(
-                group_by_page.median()
-                .drop(["query", "requesttime"], axis=1)
+                data
                 .reset_index()
                 .rename(columns={"page": "Page", "runtime": "Runtime"})
             )
             .mark_bar(tooltip=True)
             .encode(
                 alt.X("Page", title="Page"),
-                alt.Y("Runtime", title="Runtime"),
+                alt.Y("median(Runtime)", title="Runtime"),
                 color="Page",
                 tooltip=["Page", "Runtime"],
             )
@@ -181,5 +167,3 @@ def render(location):
     location.write(chart)
 
     del data
-    del group_by_page
-    del count_by_day

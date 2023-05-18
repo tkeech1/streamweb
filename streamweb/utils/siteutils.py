@@ -10,39 +10,11 @@ import logging
 from utils.feed import create_feed_file, FeedType
 from utils.metrics import log_runtime
 
-
 logger = logging.getLogger(__name__)
 
 # https://docs.streamlit.io/en/stable/caching.html#the-hash-funcs-parameter
 
 production_label = "prd"
-
-
-class ModuleLoader:
-    def __init__(self, package_name: str, environment: str):
-        self.package_name = package_name
-        self.environment = environment
-
-
-def hash_module_modified(module_loader: ModuleLoader) -> Tuple[str, float]:
-
-    if module_loader.environment == production_label:
-        # skip dynamic module loading
-        return (module_loader.package_name, 0)
-    else:
-        # for development, load modules dynamically if files have changed
-        last_modified = 0
-        for filename in os.listdir(module_loader.package_name):
-            if not filename == "__init__.py" and filename.endswith(".py"):
-                if (
-                    os.path.getmtime(os.path.join(module_loader.package_name, filename))
-                    > last_modified
-                ):
-                    last_modified = os.path.getmtime(
-                        os.path.join(module_loader.package_name, filename)
-                    )
-        return (module_loader.package_name, last_modified)
-
 
 class StreamwebSite:
     def __init__(
@@ -67,30 +39,30 @@ class StreamwebSite:
         self.atom_feed = {}
 
     def load_content(self, package_name: str) -> None:
-        content_loader = ModuleLoader(
-            package_name=package_name, environment=self.environment
-        )
+        # content_loader = ModuleLoader(
+        #     package_name=package_name, environment=self.environment
+        # )
 
-        self.content_modules[package_name] = self.load_modules(content_loader)
+        self.content_modules[package_name] = self.load_modules(package_name, self.environment)
         self.atom_feed[package_name], self.rss_feed[package_name] = self.load_feeds(
-            content_loader
+            package_name, self.environment
         )
 
     # TODO - This function reloads all modules if any module has
     # changed. Change to load only those modules that have changed
     # since last load
-    @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
-    def load_modules(self, module_loader: ModuleLoader) -> List[ModuleType]:
+    @st.cache_resource #(hash_funcs={ModuleLoader: hash_module_modified})
+    def load_modules(_self, package_name:str, environment:str = "dev") -> List[ModuleType]:
 
         logger.info(
-            f"loading content modules in '{module_loader.package_name}' package "
+            f"loading content modules in '{package_name}' package "
         )
 
         importlib.invalidate_caches()
 
         all_modules = []
-        if os.path.isdir(module_loader.package_name):
-            modules = glob.glob(join(module_loader.package_name, "*.py"))
+        if os.path.isdir(package_name):
+            modules = glob.glob(join(package_name, "*.py"))
             all_modules = [
                 basename(f)[:-3]
                 for f in modules
@@ -101,7 +73,7 @@ class StreamwebSite:
         for module_name in all_modules:
             module = importlib.import_module(
                 name=f".{module_name}",
-                package=module_loader.package_name.replace(os.path.sep, "."),
+                package=package_name.replace(os.path.sep, "."),
             )
             # if the module has already been loaded, reload() so the
             # import system sees the changes to the module
@@ -114,49 +86,49 @@ class StreamwebSite:
     # TODO - This function reloads all modules if any module has
     # changed. Change to load only those modules that have changed
     # since last load
-    @st.cache(hash_funcs={ModuleLoader: hash_module_modified})
-    def load_feeds(self, module_loader: ModuleLoader) -> Tuple[str, str]:
+    @st.cache_resource #(hash_funcs={ModuleLoader: hash_module_modified})
+    def load_feeds(_self, package_name: str, environment: str="dev") -> Tuple[str, str]:
 
         logging.info(
-            f"loading feeds for modules in '{module_loader.package_name}' package "
+            f"loading feeds for modules in '{package_name}' package "
         )
 
-        rss_feed = self.create_feed(
-            module_loader.package_name,
-            module_loader.package_name.replace(os.sep, "_"),
+        rss_feed = _self.create_feed(
+            package_name,
+            package_name.replace(os.sep, "_"),
             FeedType.RSS,
         )
 
-        atom_feed = self.create_feed(
-            module_loader.package_name,
-            module_loader.package_name.replace(os.sep, "_"),
+        atom_feed = _self.create_feed(
+            package_name,
+            package_name.replace(os.sep, "_"),
             FeedType.ATOM,
         )
 
         return atom_feed, rss_feed
 
     def create_buttons(
-        self, content_name, location: st, number_items_to_display: int = 999999
+        _self, content_name, _location: st, number_items_to_display: int = 999999
     ) -> List[bool]:
         # this is a workaround since it doesn't appear possible to
         # get the key of the button that was clicked
         # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
         button_click_flags = []
-        for c in self.content_modules[content_name][
-            : min(number_items_to_display, len(self.content_modules[content_name]))
+        for c in _self.content_modules[content_name][
+            : min(number_items_to_display, len(_self.content_modules[content_name]))
         ]:
-            # button_click_flags.append(location.button(c.short_title, key=c.key))
-            button_click_flags.append(location.button(c.short_title))
+            button_click_flags.append(_location.button(c.short_title))
         return button_click_flags
 
+    @st.cache_resource
     def create_link_list(
-        self,
+        _self,
         content_name: str,
-        location: st,
+        _location: st,
         search_text: str,
     ) -> None:
 
-        for module in self.content_modules[content_name]:
+        for module in _self.content_modules[content_name]:
             display = True
             if search_text:
                 if search_text.lower() not in module.long_title.lower():
@@ -166,7 +138,7 @@ class StreamwebSite:
                     f"<a href='/?content={module.key}' target='_self'>"
                     f"{module.long_title}</a>"
                 )
-                location.markdown(
+                _location.markdown(
                     f'{link}',
                     #f'{module.content_date.strftime("%Y.%m.%d")} - {link}',
                     unsafe_allow_html=True,
@@ -186,12 +158,9 @@ class StreamwebSite:
                         content.render(location)
                         return content.key
 
-            raise Exception("Content not found")
+            raise Exception()
         except Exception as e:
-            if self.environment == production_label:
-                location.write("Content not found.")
-            else:
-                location.write(f"{e}")
+            location.write("Content not found")
             return -1
 
     def render_content_by_key(
@@ -199,17 +168,16 @@ class StreamwebSite:
     ) -> int:
         try:
             if content_key:
-                for content in self.content_modules[content_name]:
-                    if int(content_key) == content.key:
-                        content.render(location)
-                        return content.key
+                content_key = content_key[:5]
+                if type(int(content_key)) is int:
+                    for content in self.content_modules[content_name]:
+                        if int(content_key) == content.key:
+                            content.render(location)
+                            return content.key
 
-            raise Exception("Content not found")
+            raise Exception()
         except Exception as e:
-            if self.environment == production_label:
-                location.write("Content not found.")
-            else:
-                location.write(f"{e}")
+            location.write("Content not found")
             return -1
 
     def create_feed_generator(self, content_name: str) -> FeedGenerator:

@@ -25,7 +25,7 @@ def main(sws: StreamwebSite, content_id: str):
 
     st.sidebar.subheader("")
     st.sidebar.subheader("Latest")
-    dynamic_content_button_click = sws.create_buttons("dynamic", st.sidebar, 3)
+    dynamic_content_button_click = sws.create_buttons("dynamic", st.sidebar, 3) 
 
     @log_runtime
     def home(location: st, sws: StreamwebSite):
@@ -33,7 +33,7 @@ def main(sws: StreamwebSite, content_id: str):
         location.markdown("")
         location.markdown("")
 
-        sws.create_link_list(content_name="dynamic", location=location, search_text="")
+        sws.create_link_list(content_name="dynamic", _location=location, search_text="")
 
         location.subheader("")
         location.markdown(

@@ -96,7 +96,7 @@ row
 type(row.date)
         """
     )  
-    location.write(type(row.date))     
+    location.code(f'{type(row.date)}')     
     location.write('Returning the date from the tuple works as expected. But returning the category column doesn''t return a category object. It returns an `int` in this case. ')
 
     location.code(
@@ -104,7 +104,7 @@ type(row.date)
 type(row.cat)
         """
     )  
-    location.write(type(row.cat))   
+    location.code(f'{type(row.cat)}')   
 
     location.markdown("### Performance")    
 
