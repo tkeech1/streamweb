@@ -49,7 +49,8 @@ Overall, it was a fun project and I'm looking forward to seeing what else is pos
 intersting front-end frameworks written in Rust (Leptos, Sycamore, Yew) I'd like to try. I have a 
 long way to go with Rust but that's part of the fun. 
 
-Code: [https://github.com/tkeech1/wordleassist](https://github.com/tkeech1/wordleassist)
+* Demo: [http://tkeech.s3-website-us-east-1.amazonaws.com/](http://tkeech.s3-website-us-east-1.amazonaws.com/)
+* Code: [https://github.com/tkeech1/wordleassist](https://github.com/tkeech1/wordleassist)
     """)    
 
     components.iframe("http://tkeech.s3-website-us-east-1.amazonaws.com/", width=375,height=667)   
