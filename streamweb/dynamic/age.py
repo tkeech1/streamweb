@@ -18,6 +18,10 @@ def render(location: st):
     location.markdown(f"## [{long_title}](/?content={key})")
     #location.write(f"*{content_date.strftime('%m.%d.%Y')}*")
 
+    location.markdown("""
+    My son and I were curious about this one day... It was a good excuse to introduce him to Python. 
+    """)
+
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
 

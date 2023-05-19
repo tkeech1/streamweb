@@ -43,63 +43,63 @@ def render(location):
 
     data["date"] = data["datetime"].apply(lambda x: x.split(" ")[0])
 
-    count_by_day = (
-        (data[["date", "page", "datetime"]].groupby(by=["date", "page"]).count())
-        .reset_index()
-        .rename(columns={"datetime": "Count", "page": "Page", "date": "Date"})
-    )
+    # count_by_day = (
+    #     (data[["date", "page", "datetime"]].groupby(by=["date", "page"]).count())
+    #     .reset_index()
+    #     .rename(columns={"datetime": "Count", "page": "Page", "date": "Date"})
+    # )
 
-    selection = alt.selection_single(fields=["Page"], bind="legend")
-    chart = (
-        (
-            alt.Chart(count_by_day)
-            .mark_line(tooltip=True, point=True)
-            .encode(
-                alt.X("Date", title="Date", timeUnit="yearmonthdate"),
-                alt.Y("Count", title="Hits"),
-                color="Page",
-                opacity=alt.condition(selection, alt.value(1), alt.value(0.2)),
-            )
-        )
-        .add_selection(selection)
-        .properties(width=width, height=height, title="Hits by Date")
-        .configure_axis(labelFontSize=label_font_size, titleFontSize=title_font_size)
-        .configure_legend(titleFontSize=title_font_size, labelFontSize=label_font_size)
-        .configure_title(
-            fontSize=heading_font_size,
-        )
-        .interactive()
-    )
-    location.write(chart)
+    # selection = alt.selection_single(fields=["Page"], bind="legend")
+    # chart = (
+    #     (
+    #         alt.Chart(count_by_day)
+    #         .mark_line(tooltip=True, point=True)
+    #         .encode(
+    #             alt.X("Date", title="Date", timeUnit="yearmonthdate"),
+    #             alt.Y("Count", title="Hits"),
+    #             color="Page",
+    #             opacity=alt.condition(selection, alt.value(1), alt.value(0.2)),
+    #         )
+    #     )
+    #     .add_selection(selection)
+    #     .properties(width=width, height=height, title="Hits by Date")
+    #     .configure_axis(labelFontSize=label_font_size, titleFontSize=title_font_size)
+    #     .configure_legend(titleFontSize=title_font_size, labelFontSize=label_font_size)
+    #     .configure_title(
+    #         fontSize=heading_font_size,
+    #     )
+    #     .interactive()
+    # )
+    # location.write(chart)
 
-    st.markdown("""---""")
+    # st.markdown("""---""")
 
-    chart = (
-        (
-            alt.Chart(
-                data["page"]
-                .value_counts()
-                .reset_index()
-                .rename(columns={"count": "Hits", "page": "Page"})
-            )
-            .mark_bar(tooltip=True)
-            .encode(
-                alt.X("Page", title="Page"),
-                alt.Y("Hits", title="Hits"),
-                color="Page",
-                tooltip=["Page", "Hits"],
-            )
-        )
-        .properties(width=width, height=height, title="Total Hits")
-        .configure_axis(labelFontSize=label_font_size, titleFontSize=title_font_size)
-        .configure_legend(titleFontSize=title_font_size, labelFontSize=label_font_size)
-        .configure_title(
-            fontSize=heading_font_size,
-        )
-    )
-    location.write(chart)
+    # chart = (
+    #     (
+    #         alt.Chart(
+    #             data["page"]
+    #             .value_counts()
+    #             .reset_index()
+    #             .rename(columns={"count": "Hits", "page": "Page"})
+    #         )
+    #         .mark_bar(tooltip=True)
+    #         .encode(
+    #             alt.X("Page", title="Page"),
+    #             alt.Y("Hits", title="Hits"),
+    #             color="Page",
+    #             tooltip=["Page", "Hits"],
+    #         )
+    #     )
+    #     .properties(width=width, height=height, title="Total Hits")
+    #     .configure_axis(labelFontSize=label_font_size, titleFontSize=title_font_size)
+    #     .configure_legend(titleFontSize=title_font_size, labelFontSize=label_font_size)
+    #     .configure_title(
+    #         fontSize=heading_font_size,
+    #     )
+    # )
+    # location.write(chart)
 
-    st.markdown("""---""")
+    # st.markdown("""---""")
 
     selection = alt.selection_single(fields=["Page"], bind="legend")
     chart = (
