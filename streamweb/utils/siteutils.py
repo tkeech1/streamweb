@@ -114,7 +114,10 @@ class StreamwebSite:
         # get the key of the button that was clicked
         # https://discuss.streamlit.io/t/how-to-use-the-key-field-in-interactive-widgets-api/1007
         button_click_flags = []
-        for c in _self.content_modules[content_name][
+
+        sorted_content = sorted(_self.content_modules[content_name], key=lambda x: x.key, reverse=True)
+
+        for c in sorted_content[
             : min(number_items_to_display, len(_self.content_modules[content_name]))
         ]:
             button_click_flags.append(_location.button(c.short_title))
@@ -128,8 +131,11 @@ class StreamwebSite:
         search_text: str,
     ) -> None:
 
-        for module in _self.content_modules[content_name]:
+        sorted_content = sorted(_self.content_modules[content_name], key=lambda x: x.key, reverse=True)
+        
+        for module in sorted_content: #_self.content_modules[content_name]:
             display = True
+            
             if search_text:
                 if search_text.lower() not in module.long_title.lower():
                     display = False

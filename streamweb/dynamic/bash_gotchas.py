@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from io import BytesIO
 
-short_title = "Bash Pro Tips"
+short_title = "A Few Bash Things"
 long_title = "A Few Bash Things I Can Never Remember"
 key = 10
 content_date = datetime.datetime(2021, 9, 15).astimezone(pytz.timezone("US/Eastern"))

@@ -33,7 +33,10 @@ def main(sws: StreamwebSite, content_id: str):
         location.markdown("")
         location.markdown("")
 
-        sws.create_link_list(content_name="dynamic", _location=location, search_text="")
+        col1, col2, col3 = location.columns(3)
+        search_text = col1.text_input(label="Search", value="", max_chars=30)
+
+        sws.create_link_list(content_name="dynamic", _location=location, search_text=search_text)
 
         location.subheader("")
         location.markdown(
