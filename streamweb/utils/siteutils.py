@@ -160,7 +160,7 @@ class StreamwebSite:
             if any(button_click):
                 for i, clicked in enumerate(button_click):
                     if clicked:
-                        content = self.content_modules[content_name][i]
+                        content = sorted(self.content_modules[content_name], key=lambda x: x.key, reverse=True)[i]
                         content.render(location)
                         return content.key
 
