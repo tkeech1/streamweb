@@ -46,7 +46,7 @@ based on the letters that have been guessed. It seems to work pretty well but th
 
     location.markdown("""
 Overall, it was a fun project and I'm looking forward to seeing what else is possible with Rust in the browser. There are a lot of 
-intersting front-end frameworks written in Rust (Leptos, Sycamore, Yew) I'd like to try. I have a 
+interesting front-end frameworks written in Rust (Leptos, Sycamore, Yew) I'd like to try. I have a 
 long way to go with Rust but that's part of the fun. 
 
 * Demo: [http://tkeech.s3-website-us-east-1.amazonaws.com/](http://tkeech.s3-website-us-east-1.amazonaws.com/)
